@@ -3,7 +3,7 @@ import Image from "next/image";
 import React from "react";
 import Container from "../layout/Container";
 import { Button } from "../ui/Button";
-import AddItemToWishlist from "@/lib/AddItemToWishlist";
+import AddItemToWishlist from "@/lib/wishlist/AddItemToWishlist";
 
 export default function ProductPage() {
   const mockProduct = {

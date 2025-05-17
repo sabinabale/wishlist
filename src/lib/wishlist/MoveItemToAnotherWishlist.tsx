@@ -1,9 +1,8 @@
-import HeartIcon from "@/components/icons/HeartIcon";
 import { Button } from "@/components/ui/Button";
 import Modal from "@/components/ui/Modal";
 import React, { useState } from "react";
 
-export default function AddItemToWishlist({
+export default function MoveItemToAnotherWishlist({
   className,
 }: {
   className?: string;
@@ -17,25 +16,29 @@ export default function AddItemToWishlist({
     <>
       <Button
         onClick={openModal}
-        variant="icon"
+        variant="secondary"
         size="none"
         className={className}
       >
-        <HeartIcon />
+        Move to another wishlist
       </Button>
 
       {isOpen && (
         <Modal onClose={closeModal}>
           <div className="flex flex-col gap-4">
-            <h2 className="text-xl font-bold">Add Item To Wishlist:</h2>
-            <Button variant="secondary" size="none">
-              Favorites
-            </Button>
+            <h2 className="text-xl font-bold">Move to wishlist:</h2>
+
+            <div className="flex flex-col gap-2">
+              <Button variant="secondary" size="default">
+                Favorites
+              </Button>
+              <Button variant="secondary" size="default">
+                For later
+              </Button>
+            </div>
           </div>
         </Modal>
       )}
     </>
   );
 }
-
-// if the user is not signed in, redirect to the login page

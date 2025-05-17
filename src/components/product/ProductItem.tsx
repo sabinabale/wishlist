@@ -5,7 +5,8 @@ import showToast from "../ui/Toast";
 import { Button } from "../ui/Button";
 import RemoveIcon from "../icons/RemoveIcon";
 import Link from "next/link";
-import AddItemToWishlist from "@/lib/AddItemToWishlist";
+import AddItemToWishlist from "@/lib/wishlist/AddItemToWishlist";
+import MoveItemToAnotherWishlist from "@/lib/wishlist/MoveItemToAnotherWishlist";
 
 export default function ProductItem({
   className,
@@ -104,7 +105,7 @@ export default function ProductItem({
           </Link>
           {layout !== "default" && (
             <div className="flex gap-6 items-center px-6">
-              <div className="flex flex-col items-center gap-1">
+              <div className="flex flex-col items-center gap-2">
                 <Button
                   onClick={(e) => {
                     e.preventDefault();
@@ -117,16 +118,7 @@ export default function ProductItem({
                 >
                   Add to cart
                 </Button>
-                <Button
-                  variant="secondary"
-                  size="default"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                  }}
-                >
-                  Move to another wishlist
-                </Button>
+                <MoveItemToAnotherWishlist />
               </div>
               <Button
                 onClick={(e) => {
