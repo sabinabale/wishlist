@@ -8,7 +8,7 @@ export default function HeartIcon({ className }: { className?: string }) {
       viewBox="0 0 24 24"
       strokeWidth={1.5}
       stroke="currentColor"
-      className={`size-6 ${className}`}
+      className={`size-6 ${className} hover:stroke-red-600 hover:fill-red-600`}
     >
       <path
         strokeLinecap="round"
