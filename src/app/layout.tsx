@@ -22,9 +22,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${inter.variable} antialiased flex flex-col min-h-screen`}
-      >
+      <body className={`${inter.variable} antialiased flex flex-col h-screen`}>
         <Navbar />
         {children}
         <Footer />
