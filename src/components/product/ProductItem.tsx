@@ -1,10 +1,19 @@
 "use client";
 import React from "react";
 import Image from "next/image";
-import HeartIcon from "../icons/HeartIcon";
 import showToast from "../ui/Toast";
+import { Button } from "../ui/Button";
+import RemoveIcon from "../icons/RemoveIcon";
+import Link from "next/link";
+import AddItemToWishlist from "@/lib/AddItemToWishlist";
 
-export default function ProductItem() {
+export default function ProductItem({
+  className,
+  layout = "default",
+}: {
+  className?: string;
+  layout?: "default" | "full-width";
+}) {
   const mockProducts = [
     {
       id: "1",
@@ -33,45 +42,108 @@ export default function ProductItem() {
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+    <>
       {mockProducts.map((product) => (
-        <article
+        <div
           key={product.id}
-          className="group relative border border-gray-300 rounded-lg flex flex-col w-60 overflow-hidden"
+          className={`
+            group relative border border-gray-300 rounded-lg overflow-hidden
+            ${
+              layout === "default"
+                ? "flex flex-col w-60"
+                : "flex flex-row gap-6 w-full"
+            }
+            ${className}
+          `}
         >
-          <div className="w-full h-40 relative overflow-hidden group-hover:opacity-75 p-4 bg-gray-100 flex items-center justify-center">
-            <button
-              onClick={() => {
-                showToast("Added to wishlist");
-              }}
-              className="absolute top-2 right-2 cursor-pointer"
+          <Link href={`/product/${product.id}`} className="contents">
+            <div
+              className={`
+              relative overflow-hidden group-hover:opacity-75 p-4 bg-gray-100 flex items-center justify-center
+              ${layout === "default" ? "w-full h-40" : "w-40 h-40"}
+            `}
             >
-              <HeartIcon className="hover:stroke-red-500 hover:fill-red-500" />
-            </button>
-            {product.image ? (
-              <Image
-                src={product.image}
-                alt={product.name}
-                width={100}
-                height={100}
-                className="w-full h-full object-center object-cover"
-              />
-            ) : (
-              <div className="w-full h-full" />
-            )}
-          </div>
-          <div className="flex flex-col gap-1 p-4">
-            <div>
-              <h3 className="text-sm text-gray-700">{product.name}</h3>
-              <p className="text-sm text-gray-500">{product.category}</p>
+              <div
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                }}
+                className="absolute top-2 right-2 z-10"
+              >
+                <AddItemToWishlist />
+              </div>
+
+              {product.image ? (
+                <Image
+                  src={product.image}
+                  alt={product.name}
+                  width={100}
+                  height={100}
+                  priority={true}
+                  className="w-40 h-auto object-center object-contain"
+                />
+              ) : (
+                <div className="w-full h-full" />
+              )}
             </div>
-            <p className="text-sm font-medium text-gray-900">
-              {product.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")}{" "}
-              kč
-            </p>
-          </div>
-        </article>
+            <div
+              className={`
+              flex flex-col gap-1 p-4
+              ${layout === "full-width" ? "flex-grow justify-center" : ""}
+            `}
+            >
+              <div>
+                <h3 className="text-sm text-gray-700">{product.name}</h3>
+                <p className="text-sm text-gray-500">{product.category}</p>
+              </div>
+              <p className="text-sm font-medium text-gray-900">
+                {product.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")}{" "}
+                kč
+              </p>
+            </div>
+          </Link>
+          {layout !== "default" && (
+            <div className="flex gap-6 items-center px-6">
+              <div className="flex flex-col items-center gap-1">
+                <Button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    showToast("Added to cart");
+                  }}
+                  variant="primary"
+                  size="default"
+                  className="w-fit h-fit"
+                >
+                  Add to cart
+                </Button>
+                <Button
+                  variant="secondary"
+                  size="default"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                  }}
+                >
+                  Move to another wishlist
+                </Button>
+              </div>
+              <Button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  showToast("Removed from wishlist");
+                }}
+                variant="icon"
+                size="none"
+                className="w-fit h-fit"
+              >
+                <RemoveIcon />
+              </Button>
+            </div>
+          )}
+        </div>
       ))}
-    </div>
+    </>
   );
 }
