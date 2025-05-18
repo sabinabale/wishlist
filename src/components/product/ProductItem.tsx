@@ -59,17 +59,17 @@ export default function ProductItem({
               ${layout === "default" ? "w-full h-40" : "w-full sm:w-40 h-40"}
             `}
             >
-              {layout === "default" && (
-                <div
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                  }}
-                  className="absolute top-2 right-2 z-10 hidden sm:block"
-                >
-                  <AddItemToWishlist productId={product.id} />
-                </div>
-              )}
+              <div
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                }}
+                className={`absolute top-2 right-2 z-10 ${
+                  layout === "default" ? "block" : "hidden"
+                }`}
+              >
+                <AddItemToWishlist productId={product.id} />
+              </div>
 
               {product.image ? (
                 <Image
