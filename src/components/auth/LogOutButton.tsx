@@ -3,6 +3,7 @@
 
 import { useRouter } from "next/navigation";
 import { Button } from "../ui/Button";
+import LogOutIcon from "../icons/LogOutIcon";
 
 export default function LogoutButton() {
   const router = useRouter();
@@ -19,6 +20,7 @@ export default function LogoutButton() {
 
   return (
     <Button variant="destructive" onClick={handleLogout}>
+      <LogOutIcon />
       Logout
     </Button>
   );
