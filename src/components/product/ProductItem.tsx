@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import showToast from "../ui/Toast";
 import { Button } from "../ui/Button";
@@ -7,6 +7,7 @@ import RemoveIcon from "../icons/RemoveIcon";
 import Link from "next/link";
 import AddItemToWishlist from "@/components/wishlist/AddItemToWishlist";
 import MoveItemToAnotherWishlist from "@/components/wishlist/MoveItemToAnotherWishlist";
+import { Product } from "@/types/types";
 
 export default function ProductItem({
   className,
@@ -15,36 +16,20 @@ export default function ProductItem({
   className?: string;
   layout?: "default" | "full-width";
 }) {
-  const mockProducts = [
-    {
-      id: "1",
-      name: "Nike SB",
-      category: "Sneakers",
-      price: 3299,
-      image:
-        "https://static.flexdog.cz/flexdog-7/products/images/113bae92-5259-4a80-9be5-a7484ae092f5.png?width=1500&quality=80",
-    },
-    {
-      id: "2",
-      name: "New Balance Black Castlerock",
-      category: "Running",
-      price: 3999,
-      image:
-        "https://static.flexdog.cz/flexdog-2/products/images/61e5b479-2c72-4ba7-9297-0d7f22dd65bb.png?width=1500&quality=80",
-    },
-    {
-      id: "3",
-      name: "Nike Air Force 1",
-      category: "Casual",
-      price: 1899,
-      image:
-        "https://static.flexdog.cz/flexdog-d/products/images/1e77f94e-69fd-461b-aeec-991614c427e2_imager.jpeg?width=828&quality=80",
-    },
-  ];
+  const [products, setProducts] = useState<Product[]>([]);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      const response = await fetch("/api/products");
+      const data = await response.json();
+      setProducts(data);
+    };
+    fetchProducts();
+  }, []);
 
   return (
     <>
-      {mockProducts.map((product) => (
+      {products.map((product) => (
         <div
           key={product.id}
           className={`
