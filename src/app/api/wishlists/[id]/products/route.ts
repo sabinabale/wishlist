@@ -9,7 +9,7 @@ export async function POST(
   { params }: { params: { id: string } }
 ) {
   try {
-    const wishlistId = params.id;
+    const wishlistId = await params.id;
     const cookieStore = await cookies();
     const userId = cookieStore.get("userId")?.value;
 
@@ -76,7 +76,7 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
-    const wishlistId = params.id;
+    const wishlistId = await params.id;
     const cookieStore = await cookies();
     const userId = cookieStore.get("userId")?.value;
 

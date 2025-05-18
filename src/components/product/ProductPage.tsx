@@ -37,21 +37,7 @@ export default function ProductPage({ id }: { id: string }) {
         <div className="flex flex-col gap-2">
           <h1 className="text-2xl font-bold">{product.name}</h1>
           <p className="text-sm text-gray-500">{product.category}</p>
-          <div className="flex flex-col gap-2 mt-2">
-            <div>Size:</div>
-            <div className="flex flex-wrap gap-2 max-w-90">
-              {product.sizes.map((size) => (
-                <Button
-                  key={size}
-                  className="w-fit border rounded-lg px-2 py-1"
-                  variant="secondary"
-                  size="default"
-                >
-                  {size}
-                </Button>
-              ))}
-            </div>
-          </div>
+          <div className="flex flex-col gap-2 mt-2"></div>
           <div className="mt-auto flex gap-6 items-center">
             <p className="text-xl font-bold">
               {product.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")}{" "}

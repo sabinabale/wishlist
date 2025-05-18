@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import showToast from "../ui/Toast";
+
 import { Button } from "../ui/Button";
 import RemoveIcon from "../icons/RemoveIcon";
 import Link from "next/link";
@@ -9,6 +9,7 @@ import AddItemToWishlist from "@/components/wishlist/AddItemToWishlist";
 import MoveItemToAnotherWishlist from "@/components/wishlist/MoveItemToAnotherWishlist";
 import { Product } from "@/types/types";
 import { removeFromWishlist } from "../wishlist/RemoveItemFromWishlist";
+import AddToCart from "../cart/AddToCart";
 
 export default function ProductItem({
   className,
@@ -106,18 +107,8 @@ export default function ProductItem({
               {layout !== "default" && (
                 <div className="flex flex-col justify-center sm:flex-row gap-6 items-center px-6">
                   <div className="flex flex-col items-center gap-2">
-                    <Button
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        showToast("Added to cart");
-                      }}
-                      variant="primary"
-                      size="default"
-                      className="w-fit h-fit"
-                    >
-                      Add to cart
-                    </Button>
+                    <AddToCart productId={product.id} />
+
                     <div
                       onClick={(e) => {
                         e.preventDefault();

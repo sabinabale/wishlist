@@ -29,7 +29,6 @@ export interface Product {
   id: string;
   name: string;
   category: string;
-  sizes: number[];
   price: number;
   image: string;
   inStock: number;
@@ -37,4 +36,22 @@ export interface Product {
 
 export interface ProductsData {
   products: Product[];
+}
+
+export interface CartItem {
+  productId: string;
+  quantity: number;
+}
+
+export interface Cart {
+  id: string;
+  userId: string;
+  items: CartItem[];
+  total: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CartsData {
+  carts: Cart[];
 }
