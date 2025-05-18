@@ -1,25 +1,86 @@
 "use client";
 import React, { useState, useRef, useEffect } from "react";
 import Wishlist from "./Wishlist";
+import { useAuth } from "@/context/AuthContext";
+import { WishlistData } from "@/types/types";
+import AddWishlist from "./AddWishlist";
 
 export default function WishlistTabs() {
   const [activeTab, setActiveTab] = useState(0);
   const [tabWidths, setTabWidths] = useState<number[]>([]);
+  const [wishlists, setWishlists] = useState<WishlistData[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
-  const tabs = ["Favorites", "For later"];
+  const { user } = useAuth();
 
   useEffect(() => {
-    const widths = tabRefs.current.map((ref) => ref?.offsetWidth ?? 0);
-    setTabWidths(widths);
-  }, []);
+    const fetchWishlists = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch("/api/wishlists");
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch wishlists");
+        }
+
+        const data = await response.json();
+        setWishlists(data);
+      } catch (err) {
+        console.error("Error fetching wishlists:", err);
+        setError("Failed to load wishlists");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (user) {
+      fetchWishlists();
+    } else {
+      setLoading(false);
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (wishlists.length > 0) {
+      const widths = tabRefs.current.map((ref) => ref?.offsetWidth ?? 0);
+      setTabWidths(widths);
+    }
+  }, [wishlists]);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-40">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-black-600"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return <div className="text-red-500 text-center p-4">{error}</div>;
+  }
+
+  if (wishlists.length === 0) {
+    return (
+      <div className="max-w-[1000px] mx-auto text-center p-10">
+        <h2 className="text-2xl font-semibold text-gray-700 mb-3">
+          No wishlists yet!
+        </h2>
+        <p className="text-gray-500 mb-6">
+          Create your first wishlist to start saving products you love.
+        </p>
+        <AddWishlist />
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-[1000px] mx-auto">
       <div className="border-b border-gray-200">
         <div className="flex space-x-8 relative">
-          {tabs.map((tab, index) => (
+          {wishlists.map((wishlist, index) => (
             <button
-              key={tab}
+              key={wishlist.id}
               ref={(el) => {
                 tabRefs.current[index] = el;
               }}
@@ -30,7 +91,7 @@ export default function WishlistTabs() {
                   : "text-gray-500 hover:text-gray-700"
               }`}
             >
-              {tab}
+              {wishlist.name}
             </button>
           ))}
           <div
@@ -43,10 +104,11 @@ export default function WishlistTabs() {
         </div>
       </div>
       <div className="mt-6">
-        {activeTab === 0 ? (
-          <Wishlist wishlist_name="Favorites" />
-        ) : (
-          <Wishlist wishlist_name="For later" />
+        {wishlists.length > 0 && activeTab < wishlists.length && (
+          <Wishlist
+            wishlist_name={wishlists[activeTab].name}
+            wishlistId={wishlists[activeTab].id}
+          />
         )}
       </div>
     </div>

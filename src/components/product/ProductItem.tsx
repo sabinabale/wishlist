@@ -12,9 +12,11 @@ import { Product } from "@/types/types";
 export default function ProductItem({
   className,
   layout = "default",
+  productIds,
 }: {
   className?: string;
   layout?: "default" | "full-width";
+  productIds?: string[];
 }) {
   const [products, setProducts] = useState<Product[]>([]);
 
@@ -22,10 +24,13 @@ export default function ProductItem({
     const fetchProducts = async () => {
       const response = await fetch("/api/products");
       const data = await response.json();
-      setProducts(data);
+      const filteredProducts = productIds
+        ? data.filter((product: Product) => productIds.includes(product.id))
+        : data;
+      setProducts(filteredProducts);
     };
     fetchProducts();
-  }, []);
+  }, [productIds]);
 
   return (
     <>
