@@ -147,18 +147,20 @@ export default function ProductItem({
                 </div>
               )}
             </div>
-            <Button
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                showToast("Removed from wishlist");
-              }}
-              variant="icon"
-              size="none"
-              className="w-full h-fit bg-red-100 rounded-none py-2 sm:hidden text-red-500"
-            >
-              Remove item
-            </Button>
+            {layout !== "default" && (
+              <Button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  showToast("Removed from wishlist");
+                }}
+                variant="icon"
+                size="none"
+                className="w-full h-fit bg-red-100 rounded-none py-2 sm:hidden text-red-500"
+              >
+                Remove item
+              </Button>
+            )}
           </Link>
         </div>
       ))}
