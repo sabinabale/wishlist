@@ -16,8 +16,8 @@ export default function AddWishlist({ className }: { className?: string }) {
     <>
       <Button
         onClick={openModal}
-        variant="icon"
-        size="none"
+        variant="primary"
+        size="default"
         className={className}
       >
         <PlusIcon /> Add wishlist
