@@ -50,7 +50,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
     }
 
-    const { productId } = await request.json();
+    const { productId, quantity } = await request.json();
 
     if (!productId) {
       return NextResponse.json(
@@ -85,11 +85,12 @@ export async function POST(request: Request) {
     );
 
     if (existingItemIndex !== -1) {
-      userCart.items[existingItemIndex].quantity += 1;
+      userCart.items[existingItemIndex].quantity =
+        quantity || userCart.items[existingItemIndex].quantity + 1;
     } else {
       const newItem: CartItem = {
         productId,
-        quantity: 1,
+        quantity: quantity || 1,
       };
       userCart.items.push(newItem);
     }
@@ -108,6 +109,64 @@ export async function POST(request: Request) {
     console.error("Error adding to cart:", error);
     return NextResponse.json(
       { error: "Failed to add item to cart" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(request: Request) {
+  try {
+    const cookieStore = await cookies();
+    const userId = cookieStore.get("userId")?.value;
+
+    if (!userId) {
+      return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+    }
+
+    const { productId } = await request.json();
+
+    if (!productId) {
+      return NextResponse.json(
+        { error: "Product ID is required" },
+        { status: 400 }
+      );
+    }
+
+    const cartsData = await readJsonFile<CartsData>("carts.json");
+
+    const userCart = cartsData.carts?.find((cart) => cart.userId === userId);
+
+    if (!userCart) {
+      return NextResponse.json({ error: "Cart not found" }, { status: 404 });
+    }
+
+    const itemIndex = userCart.items.findIndex(
+      (item) => item.productId === productId
+    );
+
+    if (itemIndex === -1) {
+      return NextResponse.json(
+        { error: "Item not found in cart" },
+        { status: 404 }
+      );
+    }
+
+    userCart.items.splice(itemIndex, 1);
+
+    userCart.total = userCart.items.reduce(
+      (sum, item) => sum + item.quantity,
+      0
+    );
+
+    userCart.updatedAt = new Date().toISOString();
+
+    await writeJsonFile("carts.json", cartsData);
+
+    return NextResponse.json(userCart);
+  } catch (error) {
+    console.error("Error removing from cart:", error);
+    return NextResponse.json(
+      { error: "Failed to remove item from cart" },
       { status: 500 }
     );
   }

@@ -1,18 +1,3 @@
-// import CartItem from "@/components/cart/CartItem";
-// import Container from "@/components/layout/Container";
-// import React from "react";
-
-// export default function Page() {
-//   return (
-//     <Container>
-//       Cart
-//       <div className="flex flex-col gap-4 mt-8">
-//         <CartItem />
-//       </div>
-//     </Container>
-//   );
-// }
-
 "use client";
 
 import CartProductItem from "@/components/cart/CartItem";
@@ -71,7 +56,7 @@ export default function Page() {
 
   const handleRemoveProduct = async (productId: string) => {
     try {
-      const response = await fetch("/api/cart/remove", {
+      const response = await fetch("/api/cart", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -98,7 +83,7 @@ export default function Page() {
 
   const handleUpdateQuantity = async (productId: string, quantity: number) => {
     try {
-      const response = await fetch("/api/cart/update", {
+      const response = await fetch("/api/cart", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -142,11 +127,13 @@ export default function Page() {
               const cartItem = cart.items.find(
                 (item) => item.productId === product.id
               );
+              if (!cartItem) return null;
 
               return (
                 <CartProductItem
                   key={product.id}
                   product={product}
+                  initialQuantity={cartItem.quantity}
                   onRemoveProduct={handleRemoveProduct}
                   onUpdateQuantity={handleUpdateQuantity}
                   className=""
@@ -159,7 +146,16 @@ export default function Page() {
             <div className="flex justify-between">
               <span className="text-lg font-medium">Total</span>
               <span className="text-lg font-bold">
-                {cart.total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} kč
+                {products
+                  .reduce((total, product) => {
+                    const cartItem = cart.items.find(
+                      (item) => item.productId === product.id
+                    );
+                    return total + product.price * (cartItem?.quantity || 0);
+                  }, 0)
+                  .toString()
+                  .replace(/\B(?=(\d{3})+(?!\d))/g, " ")}{" "}
+                kč
               </span>
             </div>
             <div className="mt-6">
