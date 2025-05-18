@@ -1,0 +1,13 @@
+{
+  "user-1": [
+    {
+      "id": "wishlist-1",
+      "name": "My Favorite Sneakers",
+      "description": "Collection of sneakers I want to buy next",
+      "isPublic": false,
+      "shareId": "abc123",
+      "products": ["product-1", "product-2"],
+      "createdAt": "2023-10-15T10:30:00Z"
+    }
+  ]
+}
