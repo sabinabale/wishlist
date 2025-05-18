@@ -5,8 +5,8 @@ import showToast from "../ui/Toast";
 import { Button } from "../ui/Button";
 import RemoveIcon from "../icons/RemoveIcon";
 import Link from "next/link";
-import AddItemToWishlist from "@/lib/wishlist/AddItemToWishlist";
-import MoveItemToAnotherWishlist from "@/lib/wishlist/MoveItemToAnotherWishlist";
+import AddItemToWishlist from "@/components/wishlist/AddItemToWishlist";
+import MoveItemToAnotherWishlist from "@/components/wishlist/MoveItemToAnotherWishlist";
 
 export default function ProductItem({
   className,

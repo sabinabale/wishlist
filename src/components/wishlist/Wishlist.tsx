@@ -4,7 +4,7 @@ import React from "react";
 import ProductItem from "../product/ProductItem";
 import { Button } from "../ui/Button";
 import showToast from "../ui/Toast";
-import UpdateWishlistName from "@/lib/wishlist/UpdateWishlistName";
+import UpdateWishlistName from "@/components/wishlist/UpdateWishlistName";
 
 export default function Wishlist({ wishlist_name }: { wishlist_name: string }) {
   return (
