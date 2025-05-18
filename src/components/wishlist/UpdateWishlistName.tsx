@@ -4,11 +4,15 @@ import { BasicInput } from "@/components/ui/Input";
 import Modal from "@/components/ui/Modal";
 import React, { useState } from "react";
 
-export default function AddItemToWishlist({
-  className,
-}: {
+interface UpdateWishlistNameProps {
+  wishlistId: string;
   className?: string;
-}) {
+}
+
+export default function UpdateWishlistName({
+  wishlistId,
+  className,
+}: UpdateWishlistNameProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   const openModal = () => setIsOpen(true);

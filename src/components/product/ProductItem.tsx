@@ -8,15 +8,20 @@ import Link from "next/link";
 import AddItemToWishlist from "@/components/wishlist/AddItemToWishlist";
 import MoveItemToAnotherWishlist from "@/components/wishlist/MoveItemToAnotherWishlist";
 import { Product } from "@/types/types";
+import { removeFromWishlist } from "../wishlist/RemoveItemFromWishlist";
 
 export default function ProductItem({
   className,
   layout = "default",
   productIds,
+  wishlistId,
+  onRemoveProduct,
 }: {
   className?: string;
   layout?: "default" | "full-width";
   productIds?: string[];
+  wishlistId: string;
+  onRemoveProduct?: (productId: string) => void;
 }) {
   const [products, setProducts] = useState<Product[]>([]);
 
@@ -126,7 +131,16 @@ export default function ProductItem({
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
-                      showToast("Removed from wishlist");
+                      removeFromWishlist(
+                        product.id,
+                        wishlistId,
+                        (removedProductId) => {
+                          setProducts((prev) =>
+                            prev.filter((p) => p.id !== removedProductId)
+                          );
+                          onRemoveProduct?.(removedProductId);
+                        }
+                      );
                     }}
                     variant="icon"
                     size="none"
@@ -142,7 +156,15 @@ export default function ProductItem({
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  showToast("Removed from wishlist");
+                  removeFromWishlist(
+                    product.id,
+                    wishlistId,
+                    (removedProductId) => {
+                      setProducts((prev) =>
+                        prev.filter((p) => p.id !== removedProductId)
+                      );
+                    }
+                  );
                 }}
                 variant="icon"
                 size="none"

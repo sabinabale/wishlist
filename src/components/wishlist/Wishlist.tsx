@@ -1,46 +1,12 @@
-// "use client";
-
-// import React from "react";
-// import ProductItem from "../product/ProductItem";
-// import { Button } from "../ui/Button";
-// import showToast from "../ui/Toast";
-// import UpdateWishlistName from "@/components/wishlist/UpdateWishlistName";
-
-// interface WishlistProps {
-//   wishlist_name: string;
-//   wishlistId: string;
-// }
-
-// export default function Wishlist({ wishlist_name }: WishlistProps) {
-//   return (
-//     <div className="flex flex-col gap-4">
-//       <div className="flex items-center gap-3">
-//         <h2 className="text-2xl font-bold">{wishlist_name}</h2>
-//         <UpdateWishlistName />
-//       </div>
-//       <ProductItem layout="full-width" />
-//       <Button
-//         onClick={() => {
-//           showToast("Added all items to cart");
-//         }}
-//         className="self-end"
-//         variant="primary"
-//         size="default"
-//       >
-//         Add all items to cart
-//       </Button>
-//     </div>
-//   );
-// }
-
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import ProductItem from "../product/ProductItem";
 import { Button } from "../ui/Button";
 import showToast from "../ui/Toast";
 import UpdateWishlistName from "@/components/wishlist/UpdateWishlistName";
-import { Product, WishlistData } from "@/types/types";
+import { WishlistData } from "@/types/types";
+import { useRouter } from "next/navigation";
 
 interface WishlistProps {
   wishlist_name: string;
@@ -50,62 +16,50 @@ interface WishlistProps {
 export default function Wishlist({ wishlist_name, wishlistId }: WishlistProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+  const [productIds, setProductIds] = useState<string[]>([]);
+  const router = useRouter();
+
+  const fetchWishlistData = useCallback(async () => {
+    try {
+      setLoading(true);
+
+      const wishlistResponse = await fetch("/api/wishlists");
+
+      if (!wishlistResponse.ok) {
+        throw new Error("Failed to fetch wishlists");
+      }
+
+      const wishlists: WishlistData[] = await wishlistResponse.json();
+      const currentWishlist = wishlists.find((w) => w.id === wishlistId);
+
+      if (currentWishlist) {
+        setProductIds(currentWishlist.products || []);
+      } else {
+        setProductIds([]);
+      }
+    } catch (err) {
+      console.error("Error fetching wishlist products:", err);
+      setError("Failed to load wishlist");
+    } finally {
+      setLoading(false);
+    }
+  }, [wishlistId]);
 
   useEffect(() => {
-    const fetchWishlistProducts = async () => {
-      try {
-        setLoading(true);
+    fetchWishlistData();
+  }, [fetchWishlistData]);
 
-        const wishlistResponse = await fetch("/api/wishlists");
-
-        if (!wishlistResponse.ok) {
-          throw new Error("Failed to fetch wishlists");
-        }
-
-        const wishlists: WishlistData[] = await wishlistResponse.json();
-        const currentWishlist = wishlists.find((w) => w.id === wishlistId);
-
-        if (
-          !currentWishlist ||
-          !currentWishlist.products ||
-          currentWishlist.products.length === 0
-        ) {
-          setFilteredProducts([]);
-          setLoading(false);
-          return;
-        }
-
-        const productsResponse = await fetch("/api/products");
-
-        if (!productsResponse.ok) {
-          throw new Error("Failed to fetch products");
-        }
-
-        const allProducts: Product[] = await productsResponse.json();
-
-        const products = allProducts.filter((product) =>
-          currentWishlist.products.includes(product.id)
-        );
-
-        setFilteredProducts(products);
-      } catch (err) {
-        console.error("Error fetching wishlist products:", err);
-        setError("Failed to load wishlist products");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchWishlistProducts();
-  }, [wishlistId]);
+  const handleProductRemoval = (removedProductId: string) => {
+    setProductIds((prev) => prev.filter((id) => id !== removedProductId));
+    router.refresh();
+  };
 
   if (loading) {
     return (
       <div className="flex flex-col gap-4">
         <div className="flex items-center gap-3">
           <h2 className="text-2xl font-bold">{wishlist_name}</h2>
-          <UpdateWishlistName />
+          <UpdateWishlistName wishlistId={wishlistId} />
         </div>
         <div className="flex justify-center items-center py-12">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-cyan-600"></div>
@@ -119,7 +73,7 @@ export default function Wishlist({ wishlist_name, wishlistId }: WishlistProps) {
       <div className="flex flex-col gap-4">
         <div className="flex items-center gap-3">
           <h2 className="text-2xl font-bold">{wishlist_name}</h2>
-          <UpdateWishlistName />
+          <UpdateWishlistName wishlistId={wishlistId} />
         </div>
         <div className="text-red-500 text-center p-6">{error}</div>
       </div>
@@ -130,14 +84,16 @@ export default function Wishlist({ wishlist_name, wishlistId }: WishlistProps) {
     <div className="flex flex-col gap-4">
       <div className="flex items-center gap-3">
         <h2 className="text-2xl font-bold">{wishlist_name}</h2>
-        <UpdateWishlistName />
+        <UpdateWishlistName wishlistId={wishlistId} />
       </div>
 
-      {filteredProducts.length > 0 ? (
+      {productIds.length > 0 ? (
         <div className="space-y-4">
           <ProductItem
+            wishlistId={wishlistId}
             layout="full-width"
-            productIds={filteredProducts.map((product) => product.id)}
+            productIds={productIds}
+            onRemoveProduct={handleProductRemoval}
           />
         </div>
       ) : (
@@ -146,16 +102,18 @@ export default function Wishlist({ wishlist_name, wishlistId }: WishlistProps) {
         </div>
       )}
 
-      <Button
-        onClick={() => {
-          showToast("Added all items to cart");
-        }}
-        className="self-end"
-        variant="primary"
-        size="default"
-      >
-        Add all items to cart
-      </Button>
+      {productIds.length > 0 && (
+        <Button
+          onClick={() => {
+            showToast("Added all items to cart");
+          }}
+          className="self-end"
+          variant="primary"
+          size="default"
+        >
+          Add all items to cart
+        </Button>
+      )}
     </div>
   );
 }
