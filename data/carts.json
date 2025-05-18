@@ -2,23 +2,10 @@
   "carts": [
     {
       "userId": "568db49b-5d1e-4d05-a090-b11bb6b4fda6",
-      "items": [
-        {
-          "productId": "product-1",
-          "quantity": 2
-        },
-        {
-          "productId": "product-2",
-          "quantity": 2
-        },
-        {
-          "productId": "product-3",
-          "quantity": 1
-        }
-      ],
+      "items": [],
       "createdAt": "2024-03-20T10:00:00.000Z",
-      "updatedAt": "2025-05-18T19:05:48.655Z",
-      "total": 5
+      "updatedAt": "2025-05-18T20:02:04.724Z",
+      "total": 0
     }
   ]
 }

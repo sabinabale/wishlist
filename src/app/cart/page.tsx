@@ -1,9 +1,11 @@
 "use client";
 
-import CartProductItem from "@/components/cart/CartItem";
+import CartProductItem from "@/components/cart/CartProductItem";
 import Container from "@/components/layout/Container";
 import React, { useEffect, useState } from "react";
 import { Cart, CartItem, Product } from "@/types/types";
+import { Button } from "@/components/ui/Button";
+import RemoveAllItemsFromCart from "@/components/cart/RemoveAllItemsFromCart";
 
 export default function Page() {
   const [cart, setCart] = useState<Cart | null>(null);
@@ -54,33 +56,6 @@ export default function Page() {
     fetchCartAndProducts();
   }, []);
 
-  const handleRemoveProduct = async (productId: string) => {
-    try {
-      const response = await fetch("/api/cart", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ productId }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to remove product");
-      }
-
-      setProducts(products.filter((product) => product.id !== productId));
-      setCart((prev) => {
-        if (!prev) return prev;
-        return {
-          ...prev,
-          items: prev.items.filter((item) => item.productId !== productId),
-        };
-      });
-    } catch (err) {
-      console.error("Error removing product:", err);
-    }
-  };
-
   const handleUpdateQuantity = async (productId: string, quantity: number) => {
     try {
       const response = await fetch("/api/cart", {
@@ -122,6 +97,7 @@ export default function Page() {
         <div className="py-8 text-center">Your cart is empty</div>
       ) : (
         <>
+          <div className="flex justify-end mb-4"></div>
           <div className="flex flex-col gap-4 mt-8">
             {products.map((product) => {
               const cartItem = cart.items.find(
@@ -134,12 +110,38 @@ export default function Page() {
                   key={product.id}
                   product={product}
                   initialQuantity={cartItem.quantity}
-                  onRemoveProduct={handleRemoveProduct}
+                  onRemoveProduct={(productId) => {
+                    setProducts(
+                      products.filter((product) => product.id !== productId)
+                    );
+                    setCart((prev) => {
+                      if (!prev) return prev;
+                      return {
+                        ...prev,
+                        items: prev.items.filter(
+                          (item) => item.productId !== productId
+                        ),
+                      };
+                    });
+                  }}
                   onUpdateQuantity={handleUpdateQuantity}
                   className=""
                 />
               );
             })}
+            <RemoveAllItemsFromCart
+              onRemoveAll={() => {
+                setCart((prev) => {
+                  if (!prev) return prev;
+                  return {
+                    ...prev,
+                    items: [],
+                    total: 0,
+                  };
+                });
+                setProducts([]);
+              }}
+            />
           </div>
 
           <div className="mt-8 border-t border-gray-200 pt-6">
@@ -159,12 +161,14 @@ export default function Page() {
               </span>
             </div>
             <div className="mt-6">
-              <button
+              <Button
+                variant="primary"
+                size="default"
                 className="w-full bg-black text-white py-3 rounded-md hover:bg-gray-800"
                 onClick={() => (window.location.href = "/checkout")}
               >
                 Proceed to Checkout
-              </button>
+              </Button>
             </div>
           </div>
         </>

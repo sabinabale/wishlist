@@ -4,9 +4,9 @@ import React, { useState } from "react";
 import showToast from "../ui/Toast";
 import Image from "next/image";
 import Link from "next/link";
-import { Button } from "../ui/Button";
-import RemoveIcon from "../icons/RemoveIcon";
+
 import { Product } from "@/types/types";
+import RemoveFromCart from "./RemoveFromCart";
 
 export default function CartProductItem({
   product,
@@ -28,12 +28,6 @@ export default function CartProductItem({
 
     setQuantity(newQuantity);
     onUpdateQuantity?.(product.id, newQuantity);
-  };
-
-  const handleRemove = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    onRemoveProduct?.(product.id);
   };
 
   if (!product) {
@@ -108,30 +102,13 @@ export default function CartProductItem({
             kč
           </div>
         </div>
-        <Button
-          onClick={(e) => {
-            handleRemove(e);
-            showToast("Item removed from cart");
+        <RemoveFromCart
+          productId={product.id}
+          onRemove={(productId) => {
+            onRemoveProduct?.(productId);
           }}
-          variant="icon"
-          size="none"
-          className="w-fit h-fit hidden sm:block"
-        >
-          <RemoveIcon />
-        </Button>
+        />
       </div>
-
-      <Button
-        onClick={(e) => {
-          handleRemove(e);
-          showToast("Item removed from cart");
-        }}
-        variant="icon"
-        size="none"
-        className="w-full h-fit bg-red-100 rounded-none py-2 sm:hidden text-red-500"
-      >
-        Remove item
-      </Button>
     </div>
   );
 }

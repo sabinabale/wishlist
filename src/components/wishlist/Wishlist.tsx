@@ -2,11 +2,10 @@
 
 import React, { useEffect, useState, useCallback } from "react";
 import ProductItem from "../product/ProductItem";
-import { Button } from "../ui/Button";
-import showToast from "../ui/Toast";
 import UpdateWishlistName from "@/components/wishlist/UpdateWishlistName";
 import { WishlistData } from "@/types/types";
 import { useRouter } from "next/navigation";
+import AddAllItemsToCart from "../cart/AddAllItemsToCart";
 
 interface WishlistProps {
   wishlist_name: string;
@@ -116,18 +115,7 @@ export default function Wishlist({
         </div>
       )}
 
-      {productIds.length > 0 && (
-        <Button
-          onClick={() => {
-            showToast("Added all items to cart");
-          }}
-          className="self-end"
-          variant="primary"
-          size="default"
-        >
-          Add all items to cart
-        </Button>
-      )}
+      <AddAllItemsToCart productIds={productIds} className="self-end" />
     </div>
   );
 }

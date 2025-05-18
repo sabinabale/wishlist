@@ -171,3 +171,36 @@ export async function DELETE(request: Request) {
     );
   }
 }
+
+export async function PATCH() {
+  try {
+    const cookieStore = await cookies();
+    const userId = cookieStore.get("userId")?.value;
+
+    if (!userId) {
+      return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+    }
+
+    const cartsData = await readJsonFile<CartsData>("carts.json");
+    const userCart = cartsData.carts?.find((cart) => cart.userId === userId);
+
+    if (!userCart) {
+      return NextResponse.json({ error: "Cart not found" }, { status: 404 });
+    }
+
+    // Clear all items from the cart
+    userCart.items = [];
+    userCart.total = 0;
+    userCart.updatedAt = new Date().toISOString();
+
+    await writeJsonFile("carts.json", cartsData);
+
+    return NextResponse.json(userCart);
+  } catch (error) {
+    console.error("Error clearing cart:", error);
+    return NextResponse.json(
+      { error: "Failed to clear cart" },
+      { status: 500 }
+    );
+  }
+}

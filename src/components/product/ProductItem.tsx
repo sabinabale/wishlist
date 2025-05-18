@@ -115,7 +115,16 @@ export default function ProductItem({
                         e.stopPropagation();
                       }}
                     >
-                      <MoveItemToAnotherWishlist />
+                      <MoveItemToAnotherWishlist
+                        productId={product.id}
+                        currentWishlistId={wishlistId}
+                        onMoved={() => {
+                          setProducts((prev) =>
+                            prev.filter((p) => p.id !== product.id)
+                          );
+                          onRemoveProduct?.(product.id);
+                        }}
+                      />
                     </div>
                   </div>
                   <Button

@@ -8,7 +8,6 @@
       "shareId": "abc123",
       "products": [
         "product-1",
-        "product-2",
         "product-3"
       ],
       "createdAt": "2023-10-15T10:30:00Z"
@@ -19,7 +18,8 @@
       "description": "",
       "isPublic": false,
       "products": [
-        "product-1"
+        "product-1",
+        "product-2"
       ],
       "createdAt": "2025-05-18T17:28:43.255Z"
     }
