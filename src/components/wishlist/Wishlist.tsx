@@ -11,9 +11,14 @@ import { useRouter } from "next/navigation";
 interface WishlistProps {
   wishlist_name: string;
   wishlistId: string;
+  onNameUpdated?: () => void;
 }
 
-export default function Wishlist({ wishlist_name, wishlistId }: WishlistProps) {
+export default function Wishlist({
+  wishlist_name,
+  wishlistId,
+  onNameUpdated,
+}: WishlistProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [productIds, setProductIds] = useState<string[]>([]);
@@ -59,7 +64,10 @@ export default function Wishlist({ wishlist_name, wishlistId }: WishlistProps) {
       <div className="flex flex-col gap-4">
         <div className="flex items-center gap-3">
           <h2 className="text-2xl font-bold">{wishlist_name}</h2>
-          <UpdateWishlistName wishlistId={wishlistId} />
+          <UpdateWishlistName
+            wishlistId={wishlistId}
+            onNameUpdated={onNameUpdated}
+          />
         </div>
         <div className="flex justify-center items-center py-12">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-cyan-600"></div>
@@ -73,7 +81,10 @@ export default function Wishlist({ wishlist_name, wishlistId }: WishlistProps) {
       <div className="flex flex-col gap-4">
         <div className="flex items-center gap-3">
           <h2 className="text-2xl font-bold">{wishlist_name}</h2>
-          <UpdateWishlistName wishlistId={wishlistId} />
+          <UpdateWishlistName
+            wishlistId={wishlistId}
+            onNameUpdated={onNameUpdated}
+          />
         </div>
         <div className="text-red-500 text-center p-6">{error}</div>
       </div>
@@ -84,7 +95,10 @@ export default function Wishlist({ wishlist_name, wishlistId }: WishlistProps) {
     <div className="flex flex-col gap-4">
       <div className="flex items-center gap-3">
         <h2 className="text-2xl font-bold">{wishlist_name}</h2>
-        <UpdateWishlistName wishlistId={wishlistId} />
+        <UpdateWishlistName
+          wishlistId={wishlistId}
+          onNameUpdated={onNameUpdated}
+        />
       </div>
 
       {productIds.length > 0 ? (

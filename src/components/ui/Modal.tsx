@@ -35,7 +35,12 @@ export default function Modal({
     document.body.style.overflow = "hidden";
     document.addEventListener("keydown", handleEscapeKey);
 
-    if (modalRef.current) {
+    if (
+      modalRef.current &&
+      !document.activeElement?.matches(
+        'input, textarea, [contenteditable="true"]'
+      )
+    ) {
       modalRef.current.focus();
     }
 

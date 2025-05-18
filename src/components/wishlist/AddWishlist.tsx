@@ -5,7 +5,15 @@ import React, { useState } from "react";
 import { Input } from "../ui/Input";
 import PlusIcon from "../icons/PlusIcon";
 
-export default function AddWishlist({ className }: { className?: string }) {
+interface AddWishlistProps {
+  onWishlistAdded?: () => void;
+  className?: string;
+}
+
+export default function AddWishlist({
+  className,
+  onWishlistAdded,
+}: AddWishlistProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [wishlistName, setWishlistName] = useState("");
 
@@ -36,6 +44,7 @@ export default function AddWishlist({ className }: { className?: string }) {
           <Button
             onClick={() => {
               showToast("New wishlist created");
+              onWishlistAdded?.();
               closeModal();
             }}
             variant="primary"
