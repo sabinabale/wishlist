@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, ChangeEvent, FormEvent } from "react";
+import { useRouter } from "next/navigation";
 import { Input } from "../ui/Input";
 import SpinnerIcon from "../icons/SpinnerIcon";
 import { Button } from "../ui/Button";
@@ -34,6 +35,7 @@ export default function RegisterForm() {
     password: "",
   });
   const [errors, setErrors] = useState<FormErrors>({});
+  const router = useRouter();
 
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
@@ -90,13 +92,28 @@ export default function RegisterForm() {
 
     setLoading(true);
     try {
-      // Simulated signup logic
-      await new Promise((res) => setTimeout(res, 1000));
-      console.log("Registered user:", formData);
+      const response = await fetch("/api/users/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
 
-      // Optionally: redirect or show success message
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Registration failed");
+      }
+
+      console.log("User registered successfully:", data.user);
+      router.push("/login");
     } catch (err) {
-      setErrorMessage("An unexpected error occurred. Please try again.");
+      setErrorMessage(
+        err instanceof Error
+          ? err.message
+          : "An unexpected error occurred. Please try again."
+      );
     } finally {
       setLoading(false);
     }
