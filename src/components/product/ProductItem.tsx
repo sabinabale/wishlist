@@ -62,7 +62,7 @@ export default function ProductItem({
                   }}
                   className="absolute top-2 right-2 z-10 hidden sm:block"
                 >
-                  <AddItemToWishlist />
+                  <AddItemToWishlist productId={product.id} />
                 </div>
               )}
 

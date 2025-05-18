@@ -60,7 +60,7 @@ export default function ProductPage({ id }: { id: string }) {
             <Button variant="primary" size="default">
               Add to cart
             </Button>
-            <AddItemToWishlist />
+            <AddItemToWishlist productId={product.id} />
           </div>
         </div>
       </div>
