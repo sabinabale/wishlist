@@ -128,12 +128,14 @@ export default function CartProductItem({
             kč
           </div>
         </div>
-        <RemoveFromCart
-          productId={product.id}
-          onRemove={(productId) => {
-            onRemoveProduct?.(productId);
-          }}
-        />
+        <div className="py-2">
+          <RemoveFromCart
+            productId={product.id}
+            onRemove={(productId) => {
+              onRemoveProduct?.(productId);
+            }}
+          />
+        </div>
       </div>
     </div>
   );

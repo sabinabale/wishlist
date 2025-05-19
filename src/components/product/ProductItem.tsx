@@ -117,6 +117,7 @@ export default function ProductItem({
                   removeFromWishlist(
                     product.id,
                     wishlistId,
+                    "",
                     (removedProductId) => {
                       onRemoveProduct?.(removedProductId);
                     }
@@ -136,9 +137,14 @@ export default function ProductItem({
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
-              removeFromWishlist(product.id, wishlistId, (removedProductId) => {
-                onRemoveProduct?.(removedProductId);
-              });
+              removeFromWishlist(
+                product.id,
+                wishlistId,
+                "",
+                (removedProductId) => {
+                  onRemoveProduct?.(removedProductId);
+                }
+              );
             }}
             variant="icon"
             size="none"

@@ -88,6 +88,7 @@ export default function Wishlist({
 
   const handleProductRemoval = () => {
     refreshWishlistData();
+    onNameUpdated?.();
   };
 
   if (loading) {

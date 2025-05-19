@@ -5,19 +5,16 @@
       "name": "Favorites",
       "description": "My favorite items",
       "isPublic": false,
-      "products": [
-        "product-3",
-        "product-2"
-      ],
+      "products": [],
       "createdAt": "2025-05-19T15:57:53.653Z"
     },
     {
-      "id": "fa8dc856-a9a4-4ea2-9c1e-8f3822d19bf7",
-      "name": "fff",
+      "id": "1fc2e20f-fb15-43eb-8f89-4f262a415e4e",
+      "name": "hello",
       "description": "",
       "isPublic": false,
       "products": [],
-      "createdAt": "2025-05-19T16:01:40.190Z"
+      "createdAt": "2025-05-19T17:42:08.696Z"
     }
   ],
   "878a7afb-1e1d-4261-b9f9-65012b37ed63": [

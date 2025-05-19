@@ -53,7 +53,10 @@ export default function MoveItemToAnotherWishlist({
     }
   };
 
-  const handleMoveToWishlist = async (targetWishlistId: string) => {
+  const handleMoveToWishlist = async (
+    targetWishlistId: string,
+    targetWishlistName: string
+  ) => {
     try {
       setLoading(true);
 
@@ -72,7 +75,7 @@ export default function MoveItemToAnotherWishlist({
       if (!addResponse.ok) {
         const data = await addResponse.json();
         if (addResponse.status === 409) {
-          showToast("Product is already in that wishlist! 😊", 1500);
+          showToast(`Product is already in "${targetWishlistName}"! 😊`, 1500);
           closeModal();
           return;
         }
@@ -91,7 +94,7 @@ export default function MoveItemToAnotherWishlist({
         throw new Error("Failed to remove product from current wishlist");
       }
 
-      showToast("Moved to another wishlist!", 1500);
+      showToast(`Item moved!`, 1500);
       closeModal();
 
       // Call onMoved callback to trigger a refresh
@@ -103,7 +106,7 @@ export default function MoveItemToAnotherWishlist({
       router.refresh();
     } catch (error) {
       console.error("Error moving product:", error);
-      showToast("Failed to move product", 1500);
+      showToast(`Failed to move item`, 1500);
     } finally {
       setLoading(false);
     }
@@ -111,7 +114,7 @@ export default function MoveItemToAnotherWishlist({
 
   const handleNewWishlistCreated = async (newWishlistId: string) => {
     // Move the item to the newly created wishlist
-    await handleMoveToWishlist(newWishlistId);
+    await handleMoveToWishlist(newWishlistId, "");
     // Close the modal
     closeModal();
 
@@ -153,7 +156,9 @@ export default function MoveItemToAnotherWishlist({
                 {wishlists.map((wishlist) => (
                   <Button
                     key={wishlist.id}
-                    onClick={() => handleMoveToWishlist(wishlist.id)}
+                    onClick={() =>
+                      handleMoveToWishlist(wishlist.id, wishlist.name)
+                    }
                     variant="secondary"
                     size="default"
                     className="text-left justify-start"

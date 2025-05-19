@@ -4,6 +4,7 @@ import showToast from "../ui/Toast";
 export async function removeFromWishlist(
   productId: string,
   wishlistId: string,
+  wishlistName: string,
   onRemoved?: (productId: string) => void
 ): Promise<boolean> {
   try {
@@ -19,7 +20,7 @@ export async function removeFromWishlist(
       throw new Error(data.error || "Failed to remove product from wishlist");
     }
 
-    showToast("Removed from wishlist");
+    showToast(`Item removed`);
 
     if (onRemoved) {
       console.log("Calling onRemoved callback with productId:", productId);
@@ -29,7 +30,7 @@ export async function removeFromWishlist(
     return true;
   } catch (error) {
     console.error("Error removing product from wishlist:", error);
-    showToast("Failed to remove from wishlist", 1500);
+    showToast(`Item removal failed`, 1500);
     return false;
   }
 }
