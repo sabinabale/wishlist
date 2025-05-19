@@ -91,7 +91,7 @@ export default function WishlistTabs() {
   }
 
   return (
-    <div className="max-w-[1000px] mx-auto">
+    <div className="max-w-[1000px] mx-auto w-full">
       <div className="border-b border-gray-200">
         <div className="flex space-x-8 relative">
           {wishlists.map((wishlist, index) => (

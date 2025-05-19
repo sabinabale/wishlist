@@ -3,7 +3,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import ProductItem from "../product/ProductItem";
 import UpdateWishlistName from "@/components/wishlist/UpdateWishlistName";
-import { WishlistData } from "@/types/types";
+import { WishlistData, Product } from "@/types/types";
 import { useRouter } from "next/navigation";
 import AddAllItemsToCart from "../cart/AddAllItemsToCart";
 
@@ -25,6 +25,7 @@ export default function Wishlist({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [productIds, setProductIds] = useState<string[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const router = useRouter();
 
   const fetchWishlistData = useCallback(async () => {
@@ -42,8 +43,19 @@ export default function Wishlist({
 
       if (currentWishlist) {
         setProductIds(currentWishlist.products || []);
+        if (currentWishlist.products && currentWishlist.products.length > 0) {
+          const productsResponse = await fetch(
+            `/api/products?ids=${currentWishlist.products.join(",")}`
+          );
+          if (!productsResponse.ok) throw new Error("Failed to fetch products");
+          const productsData: Product[] = await productsResponse.json();
+          setProducts(productsData);
+        } else {
+          setProducts([]);
+        }
       } else {
         setProductIds([]);
+        setProducts([]);
       }
     } catch (err) {
       console.error("Error fetching wishlist products:", err);
@@ -64,7 +76,7 @@ export default function Wishlist({
 
   if (loading) {
     return (
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 w-full">
         <div className="flex items-center gap-3">
           <h2 className="text-2xl font-bold">{wishlist_name}</h2>
           <UpdateWishlistName
@@ -116,12 +128,15 @@ export default function Wishlist({
 
       {productIds.length > 0 ? (
         <div className="space-y-4">
-          <ProductItem
-            wishlistId={wishlistId}
-            layout="full-width"
-            productIds={productIds}
-            onRemoveProduct={handleProductRemoval}
-          />
+          {products.map((product) => (
+            <ProductItem
+              key={product.id}
+              wishlistId={wishlistId}
+              layout="full-width"
+              product={product}
+              onRemoveProduct={handleProductRemoval}
+            />
+          ))}
         </div>
       ) : (
         <div className="text-center py-8">

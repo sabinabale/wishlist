@@ -1,4 +1,3 @@
-import EditIcon from "@/components/icons/EditIcon";
 import { Button } from "@/components/ui/Button";
 import { BasicInput } from "@/components/ui/Input";
 import Modal from "@/components/ui/Modal";
@@ -54,17 +53,14 @@ export default function UpdateWishlistName({
         throw new Error(data.error || "Failed to update wishlist name");
       }
 
-      closeModal(); // Close modal first
+      closeModal();
 
-      // Call the callback function to refetch data
       if (onNameUpdated) {
         onNameUpdated();
       }
 
-      // Show toast after updates begin
       showToast("Wishlist name updated");
 
-      // Force router to refresh the current page
       router.refresh();
     } catch (error) {
       console.error("Error updating wishlist name:", error);
@@ -78,11 +74,11 @@ export default function UpdateWishlistName({
     <>
       <Button
         onClick={openModal}
-        variant="icon"
+        variant="secondary"
         size="none"
         className={className}
       >
-        <EditIcon className="size-5 stroke-gray-500" />
+        Edit name
       </Button>
 
       {isOpen && (
