@@ -4,12 +4,12 @@ import { readJsonFile, writeJsonFile } from "@/utils/JSONfileOperations";
 import { WishlistsData } from "@/types/types";
 import { revalidatePath } from "next/cache";
 
-export async function POST(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function POST(request: NextRequest) {
   try {
-    const wishlistId = await params.id;
+    // Extract the id from the URL
+    const url = new URL(request.url);
+    const id = url.pathname.split("/").filter(Boolean).at(-2); // gets the [id] from /wishlists/[id]/products
+
     const cookieStore = await cookies();
     const userId = cookieStore.get("userId")?.value;
 
@@ -36,9 +36,7 @@ export async function POST(
     }
 
     // Find the wishlist
-    const wishlistIndex = wishlistsData[userId].findIndex(
-      (w) => w.id === wishlistId
-    );
+    const wishlistIndex = wishlistsData[userId].findIndex((w) => w.id === id);
 
     if (wishlistIndex === -1) {
       return NextResponse.json(
@@ -71,12 +69,12 @@ export async function POST(
   }
 }
 
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(request: NextRequest) {
   try {
-    const wishlistId = await params.id;
+    // Extract the id from the URL
+    const url = new URL(request.url);
+    const id = url.pathname.split("/").filter(Boolean).at(-2); // gets the [id] from /wishlists/[id]/products
+
     const cookieStore = await cookies();
     const userId = cookieStore.get("userId")?.value;
 
@@ -84,8 +82,8 @@ export async function DELETE(
       return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
     }
 
-    const url = new URL(request.url);
-    const productId = url.searchParams.get("productId");
+    const urlParams = new URLSearchParams(url.search);
+    const productId = urlParams.get("productId");
 
     if (!productId) {
       return NextResponse.json(
@@ -106,9 +104,7 @@ export async function DELETE(
     }
 
     // Find the wishlist
-    const wishlistIndex = wishlistsData[userId].findIndex(
-      (w) => w.id === wishlistId
-    );
+    const wishlistIndex = wishlistsData[userId].findIndex((w) => w.id === id);
 
     if (wishlistIndex === -1) {
       return NextResponse.json(
@@ -125,7 +121,7 @@ export async function DELETE(
     // Save updated wishlists
     await writeJsonFile("wishlists.json", wishlistsData);
 
-    revalidatePath(`/app/wishlists/${wishlistId}`);
+    revalidatePath(`/app/wishlists/${id}`);
 
     return NextResponse.json({ success: true });
   } catch (error) {
