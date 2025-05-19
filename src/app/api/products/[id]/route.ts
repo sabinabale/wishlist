@@ -2,12 +2,10 @@ import { NextResponse } from "next/server";
 import { readJsonFile } from "@/utils/JSONfileOperations";
 import { ProductsData } from "@/types/types";
 
-export async function GET(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function GET(request: Request) {
   try {
-    const productId = params.id;
+    const url = new URL(request.url);
+    const id = url.pathname.split("/").pop();
 
     const productsData = await readJsonFile<ProductsData>("products.json");
 
@@ -18,7 +16,7 @@ export async function GET(
       );
     }
 
-    const product = productsData.products.find((p) => p.id === productId);
+    const product = productsData.products.find((p) => p.id === id);
 
     if (!product) {
       return NextResponse.json({ error: "Product not found" }, { status: 404 });
