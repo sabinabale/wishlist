@@ -124,6 +124,9 @@ export default function Page() {
                       };
                     });
                   }}
+                  onUpdateCart={(updatedCart) => {
+                    setCart(updatedCart);
+                  }}
                   onUpdateQuantity={handleUpdateQuantity}
                   className=""
                 />

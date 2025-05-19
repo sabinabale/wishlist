@@ -5,22 +5,26 @@ import showToast from "../ui/Toast";
 import Image from "next/image";
 import Link from "next/link";
 
-import { Product } from "@/types/types";
+import { Cart, Product } from "@/types/types";
 import RemoveFromCart from "./RemoveFromCart";
+
+interface CartProductItemProps {
+  product: Product;
+  onRemoveProduct?: (productId: string) => void;
+  onUpdateQuantity?: (productId: string, quantity: number) => void;
+  onUpdateCart?: (updatedCart: Cart) => void;
+  className?: string;
+  initialQuantity?: number;
+}
 
 export default function CartProductItem({
   product,
   onRemoveProduct,
   onUpdateQuantity,
+  onUpdateCart,
   className,
   initialQuantity = 1,
-}: {
-  product: Product;
-  onRemoveProduct?: (productId: string) => void;
-  onUpdateQuantity?: (productId: string, quantity: number) => void;
-  className?: string;
-  initialQuantity?: number;
-}) {
+}: CartProductItemProps) {
   const [quantity, setQuantity] = useState(initialQuantity);
 
   const handleQuantityChange = async (newQuantity: number) => {
@@ -40,6 +44,7 @@ export default function CartProductItem({
 
         const updatedCart = await response.json();
         onRemoveProduct?.(product.id);
+        onUpdateCart?.(updatedCart);
         showToast("Item removed");
       } catch (error) {
         console.error("Error removing item from cart:", error);
