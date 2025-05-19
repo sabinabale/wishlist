@@ -1,14 +1,24 @@
 import React from "react";
 
-export default function HeartIcon({ className }: { className?: string }) {
+export default function HeartIcon({
+  className,
+  isInWishlist = false,
+}: {
+  className?: string;
+  isInWishlist?: boolean;
+}) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      fill="none"
+      fill={isInWishlist ? "currentColor" : "none"}
       viewBox="0 0 24 24"
       strokeWidth={1.5}
       stroke="currentColor"
-      className={`size-6 ${className} hover:stroke-red-600 hover:fill-red-600`}
+      className={`size-6 ${
+        isInWishlist
+          ? "stroke-red-600 fill-red-600"
+          : "hover:stroke-red-600 hover:fill-red-600"
+      } ${className || ""}`}
     >
       <path
         strokeLinecap="round"

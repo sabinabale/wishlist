@@ -6,10 +6,7 @@
       "description": "Collection of sneakers I want to buy next",
       "isPublic": false,
       "shareId": "abc123",
-      "products": [
-        "product-1",
-        "product-3"
-      ],
+      "products": [],
       "createdAt": "2023-10-15T10:30:00Z"
     },
     {
@@ -18,8 +15,9 @@
       "description": "",
       "isPublic": false,
       "products": [
-        "product-1",
-        "product-2"
+        "product-3",
+        "product-2",
+        "product-1"
       ],
       "createdAt": "2025-05-18T17:28:43.255Z"
     }
