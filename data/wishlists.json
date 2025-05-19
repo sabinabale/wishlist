@@ -6,8 +6,6 @@
       "description": "",
       "isPublic": false,
       "products": [
-        "product-3",
-        "product-2",
         "product-1"
       ],
       "createdAt": "2025-05-18T17:28:43.255Z"

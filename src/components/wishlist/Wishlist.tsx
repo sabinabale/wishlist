@@ -44,9 +44,15 @@ export default function Wishlist({
       if (currentWishlist) {
         setProductIds(currentWishlist.products || []);
         if (currentWishlist.products && currentWishlist.products.length > 0) {
-          const productsResponse = await fetch(
-            `/api/products?ids=${currentWishlist.products.join(",")}`
-          );
+          const productsResponse = await fetch("/api/products", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              productIds: currentWishlist.products,
+            }),
+          });
           if (!productsResponse.ok) throw new Error("Failed to fetch products");
           const productsData: Product[] = await productsResponse.json();
           setProducts(productsData);

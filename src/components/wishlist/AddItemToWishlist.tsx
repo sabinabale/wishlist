@@ -5,6 +5,8 @@ import showToast from "@/components/ui/Toast";
 import { WishlistData } from "@/types/types";
 import React, { useState, useEffect, useCallback } from "react";
 import { removeFromWishlist } from "./RemoveItemFromWishlist";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
 
 export default function AddItemToWishlist({
   className,
@@ -13,6 +15,8 @@ export default function AddItemToWishlist({
   className?: string;
   productId?: string;
 }) {
+  const router = useRouter();
+  const { user } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [wishlists, setWishlists] = useState<WishlistData[]>([]);
   const [productWishlists, setProductWishlists] = useState<WishlistData[]>([]);
@@ -66,6 +70,11 @@ export default function AddItemToWishlist({
   }, []);
 
   const openModal = useCallback(() => {
+    if (!user) {
+      router.push("/login");
+      return;
+    }
+
     if (isInWishlist) {
       if (productWishlists.length > 0) {
         removeFromWishlist(productId!, productWishlists[0].id, () => {
@@ -83,6 +92,8 @@ export default function AddItemToWishlist({
     productWishlists,
     productId,
     checkProductInWishlists,
+    user,
+    router,
   ]);
 
   const closeModal = useCallback(() => setIsOpen(false), []);
