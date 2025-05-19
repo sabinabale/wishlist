@@ -7,16 +7,20 @@ import { WishlistData } from "@/types/types";
 import { useRouter } from "next/navigation";
 import AddAllItemsToCart from "../cart/AddAllItemsToCart";
 
+import DeleteWishlist from "./DeleteWishlist";
+
 interface WishlistProps {
   wishlist_name: string;
   wishlistId: string;
   onNameUpdated?: () => void;
+  onWishlistDeleted?: (wishlistId: string) => void;
 }
 
 export default function Wishlist({
   wishlist_name,
   wishlistId,
   onNameUpdated,
+  onWishlistDeleted,
 }: WishlistProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -92,11 +96,21 @@ export default function Wishlist({
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex items-center gap-3">
-        <h2 className="text-2xl font-bold">{wishlist_name}</h2>
-        <UpdateWishlistName
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <h2 className="text-2xl font-bold">{wishlist_name}</h2>
+
+          <UpdateWishlistName
+            wishlistId={wishlistId}
+            onNameUpdated={onNameUpdated}
+          />
+        </div>
+        <DeleteWishlist
           wishlistId={wishlistId}
-          onNameUpdated={onNameUpdated}
+          onWishlistDeleted={() => {
+            onWishlistDeleted?.(wishlistId);
+            onNameUpdated?.();
+          }}
         />
       </div>
 

@@ -73,3 +73,59 @@ export async function PATCH(
     );
   }
 }
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const wishlistId = params.id;
+    const cookieStore = await cookies();
+    const userId = cookieStore.get("userId")?.value;
+
+    if (!userId) {
+      return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+    }
+
+    // Read wishlists data
+    const wishlistsData = await readJsonFile<WishlistsData>("wishlists.json");
+
+    // Check if user's wishlists exist
+    if (!wishlistsData[userId]) {
+      return NextResponse.json(
+        { error: "Wishlist not found" },
+        { status: 404 }
+      );
+    }
+
+    // Find the wishlist index
+    const wishlistIndex = wishlistsData[userId].findIndex(
+      (w) => w.id === wishlistId
+    );
+
+    if (wishlistIndex === -1) {
+      return NextResponse.json(
+        { error: "Wishlist not found" },
+        { status: 404 }
+      );
+    }
+
+    // Remove the wishlist
+    wishlistsData[userId].splice(wishlistIndex, 1);
+
+    // Save updated wishlists
+    await writeJsonFile("wishlists.json", wishlistsData);
+
+    // Revalidate paths
+    revalidatePath("/");
+    revalidatePath("/wishlist");
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error("Error deleting wishlist:", error);
+    return NextResponse.json(
+      { error: "Failed to delete wishlist" },
+      { status: 500 }
+    );
+  }
+}

@@ -52,6 +52,18 @@ export default function WishlistTabs() {
     }
   }, [wishlists]);
 
+  const handleWishlistDeleted = (deletedWishlistId: string) => {
+    const deletedIndex = wishlists.findIndex((w) => w.id === deletedWishlistId);
+
+    if (deletedIndex === activeTab) {
+      if (deletedIndex === wishlists.length - 1) {
+        setActiveTab(Math.max(0, deletedIndex - 1));
+      }
+    }
+
+    forceRefresh();
+  };
+
   if (loading && wishlists.length === 0) {
     return (
       <div className="flex justify-center items-center h-40">
@@ -116,6 +128,7 @@ export default function WishlistTabs() {
             wishlist_name={wishlists[activeTab].name}
             wishlistId={wishlists[activeTab].id}
             onNameUpdated={forceRefresh}
+            onWishlistDeleted={handleWishlistDeleted}
           />
         )}
       </div>

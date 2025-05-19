@@ -1,15 +1,6 @@
 {
   "568db49b-5d1e-4d05-a090-b11bb6b4fda6": [
     {
-      "id": "wishlist-1",
-      "name": "Favs",
-      "description": "Collection of sneakers I want to buy next",
-      "isPublic": false,
-      "shareId": "abc123",
-      "products": [],
-      "createdAt": "2023-10-15T10:30:00Z"
-    },
-    {
       "id": "33024780-5822-44a0-8c51-bdc6a22e7fd2",
       "name": "Christmas 🎄",
       "description": "",
