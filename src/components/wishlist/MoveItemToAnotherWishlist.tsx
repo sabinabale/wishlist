@@ -91,10 +91,12 @@ export default function MoveItemToAnotherWishlist({
       showToast("Moved to wishlist");
       closeModal();
 
+      // Call onMoved callback to trigger a refresh
       if (onMoved) {
         onMoved();
       }
 
+      // Force a router refresh
       router.refresh();
     } catch (error) {
       console.error("Error moving product:", error);

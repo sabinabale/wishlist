@@ -4,7 +4,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import ProductItem from "../product/ProductItem";
 import UpdateWishlistName from "@/components/wishlist/UpdateWishlistName";
 import { WishlistData, Product } from "@/types/types";
-import { useRouter } from "next/navigation";
+
 import AddAllItemsToCart from "../cart/AddAllItemsToCart";
 
 import DeleteWishlist from "./DeleteWishlist";
@@ -28,7 +28,6 @@ export default function Wishlist({
   const [error, setError] = useState("");
   const [productIds, setProductIds] = useState<string[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
-  const router = useRouter();
 
   const fetchWishlistData = useCallback(async () => {
     try {
@@ -73,13 +72,16 @@ export default function Wishlist({
     }
   }, [wishlistId]);
 
+  const refreshWishlistData = useCallback(() => {
+    fetchWishlistData();
+  }, [fetchWishlistData]);
+
   useEffect(() => {
     fetchWishlistData();
   }, [fetchWishlistData]);
 
-  const handleProductRemoval = (removedProductId: string) => {
-    setProductIds((prev) => prev.filter((id) => id !== removedProductId));
-    router.refresh();
+  const handleProductRemoval = () => {
+    refreshWishlistData();
   };
 
   if (loading) {

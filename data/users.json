@@ -14,6 +14,14 @@
       "email": "sabina@gmail.com",
       "password": "password",
       "createdAt": "2025-05-18T12:32:45.162Z"
+    },
+    {
+      "id": "878a7afb-1e1d-4261-b9f9-65012b37ed63",
+      "name": "fork",
+      "surname": "knife",
+      "email": "fork@email.com",
+      "password": "password",
+      "createdAt": "2025-05-19T16:06:09.173Z"
     }
   ]
 }

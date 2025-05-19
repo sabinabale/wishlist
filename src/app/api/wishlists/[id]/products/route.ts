@@ -59,6 +59,11 @@ export async function POST(request: NextRequest) {
     // Save updated wishlists
     await writeJsonFile("wishlists.json", wishlistsData);
 
+    // Add path revalidation
+    revalidatePath("/");
+    revalidatePath("/wishlist");
+    revalidatePath(`/wishlist/${id}`);
+
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Error adding product to wishlist:", error);
@@ -121,7 +126,10 @@ export async function DELETE(request: NextRequest) {
     // Save updated wishlists
     await writeJsonFile("wishlists.json", wishlistsData);
 
-    revalidatePath(`/app/wishlists/${id}`);
+    // Fix path revalidation
+    revalidatePath("/");
+    revalidatePath("/wishlist");
+    revalidatePath(`/wishlist/${id}`);
 
     return NextResponse.json({ success: true });
   } catch (error) {

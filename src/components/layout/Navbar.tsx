@@ -21,7 +21,7 @@ export default function Navbar() {
           Products
         </Link>
         <div className="flex gap-8">
-          <Link href="/login">
+          <Link href="/app/profile">
             <UserIcon />
           </Link>
           <Link href="/wishlist">

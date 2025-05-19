@@ -35,7 +35,7 @@ export default function LoginForm() {
 
   useEffect(() => {
     if (user && !isLoading) {
-      router.push("/app/profile");
+      router.push("/");
     }
   }, [user, isLoading, router]);
 
@@ -100,7 +100,7 @@ export default function LoginForm() {
 
       console.log("Login successful:", data.user);
 
-      router.push("/app/profile");
+      router.push("/");
     } catch (err) {
       console.error("Login error:", err);
       setErrorMessage(

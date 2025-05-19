@@ -8,7 +8,14 @@ import { Button } from "../ui/Button";
 import { useRouter } from "next/navigation";
 
 export default function WishlistTabs() {
-  const [activeTab, setActiveTab] = useState(0);
+  const [activeTab, setActiveTab] = useState(() => {
+    // Initialize from localStorage if available
+    if (typeof window !== "undefined") {
+      const savedTab = localStorage.getItem("activeWishlistTab");
+      return savedTab ? parseInt(savedTab, 10) : 0;
+    }
+    return 0;
+  });
   const [tabWidths, setTabWidths] = useState<number[]>([]);
   const [wishlists, setWishlists] = useState<WishlistData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -77,6 +84,11 @@ export default function WishlistTabs() {
     forceRefresh();
   };
 
+  const handleTabClick = (index: number) => {
+    setActiveTab(index);
+    localStorage.setItem("activeWishlistTab", index.toString());
+  };
+
   if (loading && wishlists.length === 0) {
     return (
       <div className="flex justify-center items-center h-40">
@@ -115,7 +127,7 @@ export default function WishlistTabs() {
               ref={(el) => {
                 tabRefs.current[index] = el;
               }}
-              onClick={() => setActiveTab(index)}
+              onClick={() => handleTabClick(index)}
               className={`py-4 px-1 text-sm font-medium transition-colors duration-200 ${
                 activeTab === index
                   ? "text-cyan-600"
