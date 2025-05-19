@@ -23,7 +23,7 @@ export default function ProductPage({ id }: { id: string }) {
   }
   return (
     <Container>
-      <div className="flex gap-10 justify-center">
+      <div className="flex flex-col md:flex-row gap-10 justify-center mx-auto">
         <div className="bg-gray-100 rounded-lg p-4 w-fit h-fit">
           <Image
             src={product.image}
