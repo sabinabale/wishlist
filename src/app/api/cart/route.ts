@@ -3,27 +3,52 @@ import { cookies } from "next/headers";
 import { readJsonFile, writeJsonFile } from "@/utils/JSONfileOperations";
 import { CartsData, CartItem } from "@/types/types";
 
+// Helper function to generate a temporary cart ID
+function generateTempCartId() {
+  return `temp_${crypto.randomUUID()}`;
+}
+
+// Helper function to get or create cart ID
+async function getCartId() {
+  const cookieStore = await cookies();
+  const userId = cookieStore.get("userId")?.value;
+  const tempCartId = cookieStore.get("tempCartId")?.value;
+
+  if (userId) {
+    return userId;
+  }
+
+  if (!tempCartId) {
+    const newTempCartId = generateTempCartId();
+    cookieStore.set({
+      name: "tempCartId",
+      value: newTempCartId,
+      httpOnly: true,
+      path: "/",
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 60 * 60 * 24 * 30, // 30 days
+    });
+    return newTempCartId;
+  }
+
+  return tempCartId;
+}
+
 export async function GET() {
   try {
-    const cookieStore = await cookies();
-    const userId = cookieStore.get("userId")?.value;
-
-    if (!userId) {
-      return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
-    }
-
+    const cartId = await getCartId();
     const cartsData = await readJsonFile<CartsData>("carts.json");
 
     if (!cartsData.carts) {
       cartsData.carts = [];
     }
 
-    const userCart = cartsData.carts.find((cart) => cart.userId === userId);
+    const userCart = cartsData.carts.find((cart) => cart.userId === cartId);
 
     if (!userCart) {
       return NextResponse.json({
         id: "",
-        userId,
+        userId: cartId,
         items: [],
         total: 0,
         createdAt: new Date().toISOString(),
@@ -43,13 +68,7 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    const cookieStore = await cookies();
-    const userId = cookieStore.get("userId")?.value;
-
-    if (!userId) {
-      return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
-    }
-
+    const cartId = await getCartId();
     const { productId, quantity } = await request.json();
 
     if (!productId) {
@@ -65,13 +84,13 @@ export async function POST(request: Request) {
       cartsData.carts = [];
     }
 
-    let userCart = cartsData.carts.find((cart) => cart.userId === userId);
+    let userCart = cartsData.carts.find((cart) => cart.userId === cartId);
     const now = new Date().toISOString();
 
     if (!userCart) {
       userCart = {
         id: crypto.randomUUID(),
-        userId,
+        userId: cartId,
         items: [],
         total: 0,
         createdAt: now,
@@ -116,13 +135,7 @@ export async function POST(request: Request) {
 
 export async function DELETE(request: Request) {
   try {
-    const cookieStore = await cookies();
-    const userId = cookieStore.get("userId")?.value;
-
-    if (!userId) {
-      return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
-    }
-
+    const cartId = await getCartId();
     const { productId } = await request.json();
 
     if (!productId) {
@@ -134,7 +147,7 @@ export async function DELETE(request: Request) {
 
     const cartsData = await readJsonFile<CartsData>("carts.json");
 
-    const userCart = cartsData.carts?.find((cart) => cart.userId === userId);
+    const userCart = cartsData.carts?.find((cart) => cart.userId === cartId);
 
     if (!userCart) {
       return NextResponse.json({ error: "Cart not found" }, { status: 404 });
@@ -174,15 +187,9 @@ export async function DELETE(request: Request) {
 
 export async function PATCH() {
   try {
-    const cookieStore = await cookies();
-    const userId = cookieStore.get("userId")?.value;
-
-    if (!userId) {
-      return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
-    }
-
+    const cartId = await getCartId();
     const cartsData = await readJsonFile<CartsData>("carts.json");
-    const userCart = cartsData.carts?.find((cart) => cart.userId === userId);
+    const userCart = cartsData.carts?.find((cart) => cart.userId === cartId);
 
     if (!userCart) {
       return NextResponse.json({ error: "Cart not found" }, { status: 404 });

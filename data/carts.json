@@ -2,10 +2,19 @@
   "carts": [
     {
       "userId": "568db49b-5d1e-4d05-a090-b11bb6b4fda6",
-      "items": [],
+      "items": [
+        {
+          "productId": "product-2",
+          "quantity": 1
+        },
+        {
+          "productId": "product-1",
+          "quantity": 1
+        }
+      ],
       "createdAt": "2024-03-20T10:00:00.000Z",
-      "updatedAt": "2025-05-19T14:55:58.365Z",
-      "total": 0
+      "updatedAt": "2025-05-19T17:21:50.968Z",
+      "total": 2
     },
     {
       "id": "4464ca0d-60c6-4c89-b10d-46a079c8caf9",
@@ -22,6 +31,14 @@
       "total": 0,
       "createdAt": "2025-05-19T16:35:00.265Z",
       "updatedAt": "2025-05-19T16:35:16.487Z"
+    },
+    {
+      "id": "f5ecc72f-719d-42b7-b03c-db5493c1511c",
+      "userId": "temp_bdce0803-c934-4984-b6d0-bde802ba0219",
+      "items": [],
+      "total": 0,
+      "createdAt": "2025-05-19T17:15:30.287Z",
+      "updatedAt": "2025-05-19T17:15:33.211Z"
     }
   ]
 }
