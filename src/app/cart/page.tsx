@@ -168,7 +168,6 @@ export default function Page() {
                 variant="primary"
                 size="default"
                 className="w-full bg-black text-white py-3 rounded-md hover:bg-gray-800"
-                onClick={() => (window.location.href = "/checkout")}
               >
                 Proceed to Checkout
               </Button>
