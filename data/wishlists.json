@@ -23,22 +23,21 @@
   "878a7afb-1e1d-4261-b9f9-65012b37ed63": [
     {
       "id": "f525d6d4-5023-420f-bbdc-daed8e1eb206",
-      "name": "Favorites",
-      "description": "Your favorite products",
+      "name": "Hello",
+      "description": "Your favorite",
       "isPublic": false,
-      "products": [],
+      "products": [
+        "product-1"
+      ],
       "createdAt": "2025-05-19T16:06:09.174Z"
     },
     {
-      "id": "b8f9ffe5-0487-4622-bce9-7e64768fdc67",
-      "name": "lll",
-      "description": "",
+      "id": "e69a548d-e870-4019-830b-10e4871856b4",
+      "name": "hi",
+      "description": "hi",
       "isPublic": false,
-      "products": [
-        "product-2",
-        "product-1"
-      ],
-      "createdAt": "2025-05-19T16:06:28.696Z"
+      "products": [],
+      "createdAt": "2025-05-19T16:27:09.500Z"
     }
   ]
 }

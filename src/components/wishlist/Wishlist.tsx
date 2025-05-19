@@ -8,6 +8,7 @@ import { WishlistData, Product } from "@/types/types";
 import AddAllItemsToCart from "../cart/AddAllItemsToCart";
 
 import DeleteWishlist from "./DeleteWishlist";
+import WishlistDescription from "./WishlistDescription";
 
 interface WishlistProps {
   wishlist_name: string;
@@ -28,6 +29,7 @@ export default function Wishlist({
   const [error, setError] = useState("");
   const [productIds, setProductIds] = useState<string[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
+  const [description, setDescription] = useState("");
 
   const fetchWishlistData = useCallback(async () => {
     try {
@@ -44,6 +46,7 @@ export default function Wishlist({
 
       if (currentWishlist) {
         setProductIds(currentWishlist.products || []);
+        setDescription(currentWishlist.description || "");
         if (currentWishlist.products && currentWishlist.products.length > 0) {
           const productsResponse = await fetch("/api/products", {
             method: "POST",
@@ -63,6 +66,7 @@ export default function Wishlist({
       } else {
         setProductIds([]);
         setProducts([]);
+        setDescription("");
       }
     } catch (err) {
       console.error("Error fetching wishlist products:", err);
@@ -118,24 +122,33 @@ export default function Wishlist({
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <h2 className="text-2xl font-bold">{wishlist_name}</h2>
+      <div className="flex flex-col justify-between">
+        <div className="flex justify-between items-center gap-2">
+          <div className="flex gap-2">
+            <h2 className="text-2xl font-bold">{wishlist_name}</h2>
 
-          <UpdateWishlistName
+            <UpdateWishlistName
+              wishlistId={wishlistId}
+              onNameUpdated={onNameUpdated}
+            />
+          </div>
+          {!isFirstWishlist && (
+            <DeleteWishlist
+              wishlistId={wishlistId}
+              onWishlistDeleted={() => {
+                onWishlistDeleted?.(wishlistId);
+                onNameUpdated?.();
+              }}
+            />
+          )}
+        </div>
+        <div>
+          <WishlistDescription
             wishlistId={wishlistId}
-            onNameUpdated={onNameUpdated}
+            initialDescription={description}
+            onDescriptionUpdated={onNameUpdated}
           />
         </div>
-        {!isFirstWishlist && (
-          <DeleteWishlist
-            wishlistId={wishlistId}
-            onWishlistDeleted={() => {
-              onWishlistDeleted?.(wishlistId);
-              onNameUpdated?.();
-            }}
-          />
-        )}
       </div>
 
       {productIds.length > 0 ? (
