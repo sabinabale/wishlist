@@ -18,15 +18,8 @@ export async function PATCH(
       return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
     }
 
-    // Get the updated name from request body
-    const { name } = await request.json();
-
-    if (!name || !name.trim()) {
-      return NextResponse.json(
-        { error: "Wishlist name is required" },
-        { status: 400 }
-      );
-    }
+    // Get the updated data from request body
+    const { name, description } = await request.json();
 
     // Read wishlists data
     const wishlistsData = await readJsonFile<WishlistsData>("wishlists.json");
@@ -51,8 +44,20 @@ export async function PATCH(
       );
     }
 
-    // Update wishlist name
-    wishlistsData[userId][wishlistIndex].name = name.trim();
+    // Update wishlist fields
+    if (name !== undefined) {
+      if (!name.trim()) {
+        return NextResponse.json(
+          { error: "Wishlist name is required" },
+          { status: 400 }
+        );
+      }
+      wishlistsData[userId][wishlistIndex].name = name.trim();
+    }
+
+    if (description !== undefined) {
+      wishlistsData[userId][wishlistIndex].description = description;
+    }
 
     // Save updated wishlists
     await writeJsonFile("wishlists.json", wishlistsData);
@@ -66,9 +71,9 @@ export async function PATCH(
       wishlist: wishlistsData[userId][wishlistIndex],
     });
   } catch (error) {
-    console.error("Error updating wishlist name:", error);
+    console.error("Error updating wishlist:", error);
     return NextResponse.json(
-      { error: "Failed to update wishlist name" },
+      { error: "Failed to update wishlist" },
       { status: 500 }
     );
   }
@@ -79,7 +84,7 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
-    const wishlistId = params.id;
+    const wishlistId = await params.id;
     const cookieStore = await cookies();
     const userId = cookieStore.get("userId")?.value;
 
