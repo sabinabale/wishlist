@@ -170,7 +170,7 @@ export default function WishlistTabs() {
                   : "text-gray-500 hover:text-gray-700"
               }`}
             >
-              {wishlist.name}
+              {wishlist.name} ({wishlist.products.length})
             </Button>
           ))}
           <div
