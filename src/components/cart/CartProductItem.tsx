@@ -23,11 +23,34 @@ export default function CartProductItem({
 }) {
   const [quantity, setQuantity] = useState(initialQuantity);
 
-  const handleQuantityChange = (newQuantity: number) => {
-    if (newQuantity < 1) return;
+  const handleQuantityChange = async (newQuantity: number) => {
+    if (newQuantity < 1) {
+      try {
+        const response = await fetch("/api/cart", {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ productId: product.id }),
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to remove item from cart");
+        }
+
+        const updatedCart = await response.json();
+        onRemoveProduct?.(product.id);
+        showToast("Item removed");
+      } catch (error) {
+        console.error("Error removing item from cart:", error);
+        showToast("Failed to remove item from cart");
+      }
+      return;
+    }
 
     setQuantity(newQuantity);
     onUpdateQuantity?.(product.id, newQuantity);
+    showToast("Quantity updated");
   };
 
   if (!product) {
@@ -75,7 +98,6 @@ export default function CartProductItem({
                 e.preventDefault();
                 e.stopPropagation();
                 handleQuantityChange(quantity - 1);
-                showToast("Quantity updated");
               }}
               className="px-3 py-1 border-r border-gray-300 hover:bg-gray-100 cursor-pointer"
             >
@@ -87,7 +109,6 @@ export default function CartProductItem({
                 e.preventDefault();
                 e.stopPropagation();
                 handleQuantityChange(quantity + 1);
-                showToast("Quantity updated");
               }}
               className="px-3 py-1 border-l border-gray-300 hover:bg-gray-100 cursor-pointer"
             >

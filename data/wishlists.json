@@ -61,5 +61,19 @@
       ],
       "createdAt": "2025-05-19T17:06:39.753Z"
     }
+  ],
+  "2584715d-1715-44e8-b849-48aef07c0189": [
+    {
+      "id": "55621de9-4422-419b-8b9b-df770e77171e",
+      "name": "Favorites",
+      "description": "👟",
+      "isPublic": false,
+      "products": [
+        "product-1",
+        "product-3",
+        "product-2"
+      ],
+      "createdAt": "2025-05-19T17:24:58.346Z"
+    }
   ]
 }

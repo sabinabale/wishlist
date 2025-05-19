@@ -30,6 +30,14 @@
       "email": "email@email.com",
       "password": "password",
       "createdAt": "2025-05-19T16:34:36.609Z"
+    },
+    {
+      "id": "2584715d-1715-44e8-b849-48aef07c0189",
+      "name": "juraj",
+      "surname": "masar",
+      "email": "email@email.io",
+      "password": "password",
+      "createdAt": "2025-05-19T17:24:58.343Z"
     }
   ]
 }

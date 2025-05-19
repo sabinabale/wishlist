@@ -132,7 +132,7 @@ export default function LoginForm() {
         <form className="w-72" autoComplete="off" onSubmit={handleSubmit}>
           <div className="flex flex-col gap-4">
             <h1 className="text-lg mb-4 tracking-tight">
-              Sign in to your account
+              Log in to your account
             </h1>
             <div>
               <Input
@@ -182,10 +182,10 @@ export default function LoginForm() {
             {loading ? (
               <>
                 <SpinnerIcon />
-                <span>Signing in...</span>
+                <span>Logging in...</span>
               </>
             ) : (
-              "Sign In"
+              "Log in"
             )}
           </Button>
         </form>

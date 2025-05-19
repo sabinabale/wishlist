@@ -86,7 +86,7 @@ export default function Page() {
   };
 
   return (
-    <Container>
+    <Container className="max-w-[1000px]">
       <h1 className="text-2xl font-bold mb-4">Shopping Cart</h1>
 
       {isLoading ? (
