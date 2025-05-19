@@ -2,9 +2,9 @@
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import Container from "../layout/Container";
-import { Button } from "../ui/Button";
 import AddItemToWishlist from "@/components/wishlist/AddItemToWishlist";
 import { Product } from "@/types/types";
+import AddToCart from "../cart/AddToCart";
 
 export default function ProductPage({ id }: { id: string }) {
   const [product, setProduct] = useState<Product | null>(null);
@@ -43,9 +43,7 @@ export default function ProductPage({ id }: { id: string }) {
               {product.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")}{" "}
               kč
             </p>
-            <Button variant="primary" size="default">
-              Add to cart
-            </Button>
+            <AddToCart productId={product.id} />
             <AddItemToWishlist productId={product.id} />
           </div>
         </div>
