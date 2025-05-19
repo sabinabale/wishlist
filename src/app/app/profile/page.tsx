@@ -12,24 +12,9 @@ export default function Page() {
     <Container>
       <h2 className="text-2xl font-bold">Profile info</h2>
       <section className="flex flex-col gap-2 my-8">
-        <Detail
-          value={user?.name || ""}
-          label="Name"
-          buttonLabel="Edit"
-          onClick={() => {}}
-        />
-        <Detail
-          value={user?.surname || ""}
-          label="Surname"
-          buttonLabel="Edit"
-          onClick={() => {}}
-        />
-        <Detail
-          value={user?.email || ""}
-          label="Email"
-          buttonLabel="Edit"
-          onClick={() => {}}
-        />
+        <Detail value={user?.name || ""} label="Name" />
+        <Detail value={user?.surname || ""} label="Surname" />
+        <Detail value={user?.email || ""} label="Email" />
       </section>
       <LogOutButton />
     </Container>
