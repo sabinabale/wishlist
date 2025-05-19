@@ -18,6 +18,6 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 Missing:
 
-[ ] Skeletons
-[ ] CartContext
-[ ] shareable cart links
+[] Skeletons
+[] CartContext
+[] shareable cart links
