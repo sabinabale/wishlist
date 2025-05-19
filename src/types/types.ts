@@ -55,3 +55,8 @@ export interface Cart {
 export interface CartsData {
   carts: Cart[];
 }
+
+export interface DetailProps {
+  label: string;
+  value: string;
+}
