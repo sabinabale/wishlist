@@ -5,12 +5,12 @@ import { readJsonFile, writeJsonFile } from "@/utils/JSONfileOperations";
 import { WishlistsData } from "@/types/types";
 import { revalidatePath } from "next/cache";
 
-export async function PATCH(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function PATCH(request: NextRequest) {
   try {
-    const wishlistId = params.id;
+    // Extract the id from the URL
+    const url = new URL(request.url);
+    const wishlistId = url.pathname.split("/").filter(Boolean).at(-1);
+
     const cookieStore = await cookies();
     const userId = cookieStore.get("userId")?.value;
 
@@ -79,12 +79,12 @@ export async function PATCH(
   }
 }
 
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(request: NextRequest) {
   try {
-    const wishlistId = await params.id;
+    // Extract the id from the URL
+    const url = new URL(request.url);
+    const wishlistId = url.pathname.split("/").filter(Boolean).at(-1);
+
     const cookieStore = await cookies();
     const userId = cookieStore.get("userId")?.value;
 
