@@ -11,19 +11,23 @@ import { Product } from "@/types/types";
 import { removeFromWishlist } from "../wishlist/RemoveItemFromWishlist";
 import AddToCart from "../cart/AddToCart";
 
+interface ProductItemProps {
+  className?: string;
+  layout?: "default" | "full-width";
+  product: Product;
+  wishlistId: string;
+  onRemoveProduct?: (productId: string) => void;
+  onNewWishlistCreated?: (newWishlistId: string) => void;
+}
+
 export default function ProductItem({
   className,
   layout = "default",
   product,
   wishlistId,
   onRemoveProduct,
-}: {
-  className?: string;
-  layout?: "default" | "full-width";
-  product: Product;
-  wishlistId: string;
-  onRemoveProduct?: (productId: string) => void;
-}) {
+  onNewWishlistCreated,
+}: ProductItemProps) {
   return (
     <div
       className={`
@@ -102,6 +106,7 @@ export default function ProductItem({
                     onMoved={() => {
                       onRemoveProduct?.(product.id);
                     }}
+                    onNewWishlistCreated={onNewWishlistCreated}
                   />
                 </div>
               </div>

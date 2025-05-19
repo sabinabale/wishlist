@@ -97,6 +97,34 @@ export default function WishlistTabs() {
     localStorage.setItem("activeWishlistTab", index.toString());
   };
 
+  const handleNewWishlistCreated = async (newWishlistId: string) => {
+    try {
+      setLoading(true);
+      const response = await fetch(`/api/wishlists?_=${Date.now()}`);
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch wishlists");
+      }
+
+      const data = await response.json();
+      setWishlists(data);
+
+      // Find the index of the newly created wishlist in the fresh data
+      const newWishlistIndex = data.findIndex(
+        (w: WishlistData) => w.id === newWishlistId
+      );
+      if (newWishlistIndex !== -1) {
+        setActiveTab(newWishlistIndex);
+        localStorage.setItem("activeWishlistTab", newWishlistIndex.toString());
+      }
+    } catch (err) {
+      console.error("Error fetching wishlists:", err);
+      setError("Failed to load wishlists");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   if (loading && wishlists.length === 0) {
     return (
       <div className="flex justify-center items-center h-40">
@@ -163,6 +191,7 @@ export default function WishlistTabs() {
             onNameUpdated={forceRefresh}
             onWishlistDeleted={handleWishlistDeleted}
             isFirstWishlist={activeTab === 0}
+            onNewWishlistCreated={handleNewWishlistCreated}
           />
         )}
       </div>

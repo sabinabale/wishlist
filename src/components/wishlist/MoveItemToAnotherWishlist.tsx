@@ -11,6 +11,7 @@ interface MoveItemToAnotherWishlistProps {
   productId: string;
   currentWishlistId: string;
   onMoved?: () => void;
+  onNewWishlistCreated?: (newWishlistId: string) => void;
 }
 
 export default function MoveItemToAnotherWishlist({
@@ -18,6 +19,7 @@ export default function MoveItemToAnotherWishlist({
   productId,
   currentWishlistId,
   onMoved,
+  onNewWishlistCreated,
 }: MoveItemToAnotherWishlistProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [wishlists, setWishlists] = useState<WishlistData[]>([]);
@@ -107,10 +109,17 @@ export default function MoveItemToAnotherWishlist({
     }
   };
 
-  const handleNewWishlistCreated = async () => {
-    // Fetch the updated list of wishlists
-    await fetchWishlists();
-    // Force a router refresh to update the wishlist tabs
+  const handleNewWishlistCreated = async (newWishlistId: string) => {
+    // Move the item to the newly created wishlist
+    await handleMoveToWishlist(newWishlistId);
+    // Close the modal
+    closeModal();
+
+    // Call the callback to update the active tab
+    if (onNewWishlistCreated) {
+      onNewWishlistCreated(newWishlistId);
+    }
+
     router.refresh();
   };
 

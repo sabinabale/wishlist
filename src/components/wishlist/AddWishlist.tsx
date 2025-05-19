@@ -1,65 +1,3 @@
-// import { Button } from "@/components/ui/Button";
-// import Modal from "@/components/ui/Modal";
-// import showToast from "@/components/ui/Toast";
-// import React, { useState } from "react";
-// import { BasicInput } from "../ui/Input";
-// import PlusIcon from "../icons/PlusIcon";
-
-// interface AddWishlistProps {
-//   onWishlistAdded?: () => void;
-//   className?: string;
-// }
-
-// export default function AddWishlist({
-//   className,
-//   onWishlistAdded,
-// }: AddWishlistProps) {
-//   const [isOpen, setIsOpen] = useState(false);
-//   const [wishlistName, setWishlistName] = useState("");
-
-//   const openModal = () => setIsOpen(true);
-//   const closeModal = () => setIsOpen(false);
-
-//   return (
-//     <>
-//       <Button
-//         onClick={openModal}
-//         variant="secondary"
-//         size="default"
-//         className={`${className}`}
-//       >
-//         <PlusIcon />
-//         <span>Add wishlist</span>
-//       </Button>
-
-//       {isOpen && (
-//         <Modal onClose={closeModal}>
-//           <div className="flex flex-col gap-2">
-//             <h2 className="text-xl font-bold">Wishlist name:</h2>
-//             <BasicInput
-//               value={wishlistName}
-//               placeholder="Christmas 🎄"
-//               onChange={(e) => setWishlistName(e.target.value)}
-//             />
-//           </div>
-//           <Button
-//             onClick={() => {
-//               showToast("New wishlist created");
-//               onWishlistAdded?.();
-//               closeModal();
-//             }}
-//             variant="primary"
-//             size="default"
-//             className="mt-4"
-//           >
-//             Add wishlist
-//           </Button>
-//         </Modal>
-//       )}
-//     </>
-//   );
-// }
-
 import { Button } from "@/components/ui/Button";
 import Modal from "@/components/ui/Modal";
 import showToast from "@/components/ui/Toast";
@@ -69,7 +7,7 @@ import PlusIcon from "../icons/PlusIcon";
 import { useRouter } from "next/navigation";
 
 interface AddWishlistProps {
-  onWishlistAdded?: () => void;
+  onWishlistAdded?: (newWishlistId: string) => void;
   className?: string;
 }
 
@@ -110,11 +48,12 @@ export default function AddWishlist({
         throw new Error(data.error || "Failed to create wishlist");
       }
 
+      const data = await response.json();
       closeModal();
       showToast("New wishlist created");
 
       if (onWishlistAdded) {
-        onWishlistAdded();
+        onWishlistAdded(data.wishlist.id);
       }
 
       router.refresh();

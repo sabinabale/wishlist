@@ -47,20 +47,19 @@
       "description": "Your favorite p",
       "isPublic": false,
       "products": [
-        "product-2",
         "product-3"
       ],
       "createdAt": "2025-05-19T16:34:36.610Z"
     },
     {
-      "id": "9e759651-8384-40a3-b863-1a1d6877dd04",
+      "id": "56af22bd-e830-4c18-bc86-883fb4ebc715",
       "name": "hello",
       "description": "",
       "isPublic": false,
       "products": [
-        "product-1"
+        "product-2"
       ],
-      "createdAt": "2025-05-19T16:50:42.521Z"
+      "createdAt": "2025-05-19T17:06:39.753Z"
     }
   ]
 }

@@ -16,6 +16,7 @@ interface WishlistProps {
   onNameUpdated?: () => void;
   onWishlistDeleted?: (wishlistId: string) => void;
   isFirstWishlist?: boolean;
+  onNewWishlistCreated?: (newWishlistId: string) => void;
 }
 
 export default function Wishlist({
@@ -24,6 +25,7 @@ export default function Wishlist({
   onNameUpdated,
   onWishlistDeleted,
   isFirstWishlist = false,
+  onNewWishlistCreated,
 }: WishlistProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -160,6 +162,7 @@ export default function Wishlist({
               layout="full-width"
               product={product}
               onRemoveProduct={handleProductRemoval}
+              onNewWishlistCreated={onNewWishlistCreated}
             />
           ))}
         </div>
