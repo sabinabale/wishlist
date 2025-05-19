@@ -4,6 +4,7 @@ import showToast from "@/components/ui/Toast";
 import { WishlistData } from "@/types/types";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import AddWishlist from "./AddWishlist";
 
 interface MoveItemToAnotherWishlistProps {
   className?: string;
@@ -88,7 +89,7 @@ export default function MoveItemToAnotherWishlist({
         throw new Error("Failed to remove product from current wishlist");
       }
 
-      showToast("Moved to wishlist");
+      showToast("Moved to another wishlist!", 1500);
       closeModal();
 
       // Call onMoved callback to trigger a refresh
@@ -104,6 +105,13 @@ export default function MoveItemToAnotherWishlist({
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleNewWishlistCreated = async () => {
+    // Fetch the updated list of wishlists
+    await fetchWishlists();
+    // Force a router refresh to update the wishlist tabs
+    router.refresh();
   };
 
   return (
@@ -127,7 +135,10 @@ export default function MoveItemToAnotherWishlist({
                 <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-cyan-600"></div>
               </div>
             ) : wishlists.length === 0 ? (
-              <p className="text-gray-600">No other wishlists available.</p>
+              <>
+                <p className="text-gray-600">No other wishlists available.</p>
+                <AddWishlist onWishlistAdded={handleNewWishlistCreated} />
+              </>
             ) : (
               <div className="flex flex-col gap-2">
                 {wishlists.map((wishlist) => (

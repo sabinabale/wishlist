@@ -72,6 +72,14 @@ export default function WishlistTabs() {
     }
   }, [wishlists]);
 
+  useEffect(() => {
+    // Ensure first tab is selected when wishlists are loaded
+    if (wishlists.length > 0 && activeTab >= wishlists.length) {
+      setActiveTab(0);
+      localStorage.setItem("activeWishlistTab", "0");
+    }
+  }, [wishlists, activeTab]);
+
   const handleWishlistDeleted = (deletedWishlistId: string) => {
     const deletedIndex = wishlists.findIndex((w) => w.id === deletedWishlistId);
 

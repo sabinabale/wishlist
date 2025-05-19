@@ -39,5 +39,28 @@
       "products": [],
       "createdAt": "2025-05-19T16:27:09.500Z"
     }
+  ],
+  "827c902d-225a-4ac7-b5e9-7b1e01211c8d": [
+    {
+      "id": "dce0827f-c110-4593-8264-2ab2521f328d",
+      "name": "Favorites",
+      "description": "Your favorite p",
+      "isPublic": false,
+      "products": [
+        "product-2",
+        "product-3"
+      ],
+      "createdAt": "2025-05-19T16:34:36.610Z"
+    },
+    {
+      "id": "9e759651-8384-40a3-b863-1a1d6877dd04",
+      "name": "hello",
+      "description": "",
+      "isPublic": false,
+      "products": [
+        "product-1"
+      ],
+      "createdAt": "2025-05-19T16:50:42.521Z"
+    }
   ]
 }

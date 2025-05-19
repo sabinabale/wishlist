@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/Button";
 import EditIcon from "../icons/EditIcon";
 import Modal from "@/components/ui/Modal";
 import { Textarea } from "@/components/ui/Textarea";
+import showToast from "../ui/Toast";
+
 interface UpdateWishlistDescriptionProps {
   wishlistId: string;
   initialDescription?: string;
@@ -36,11 +38,12 @@ export default function UpdateWishlistDescription({
       if (!response.ok) {
         throw new Error("Failed to update description");
       }
-
+      showToast("Wishlist description updated!", 1500);
       setIsModalOpen(false);
       onDescriptionUpdated?.();
     } catch (error) {
       console.error("Error updating wishlist description:", error);
+      showToast("Failed to update wishlist description", 1500);
     } finally {
       setIsLoading(false);
     }

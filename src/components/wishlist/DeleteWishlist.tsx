@@ -3,6 +3,7 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "../ui/Button";
+import showToast from "../ui/Toast";
 
 interface DeleteWishlistProps {
   wishlistId: string;
@@ -28,13 +29,13 @@ export default function DeleteWishlist({
       if (!response.ok) {
         throw new Error("Failed to delete wishlist");
       }
-
+      showToast("Wishlist deleted successfully");
       onWishlistDeleted?.();
       router.push("/wishlist");
       router.refresh();
     } catch (error) {
       console.error("Error deleting wishlist:", error);
-      alert("Failed to delete wishlist. Please try again.");
+      showToast("Failed to delete wishlist. Please try again.", 1500);
     }
   };
 
