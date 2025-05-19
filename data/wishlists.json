@@ -1,14 +1,23 @@
 {
   "568db49b-5d1e-4d05-a090-b11bb6b4fda6": [
     {
-      "id": "33024780-5822-44a0-8c51-bdc6a22e7fd2",
-      "name": "Christmas 🎄",
+      "id": "f12b39a9-5f96-4f94-a5c7-1c9417351d6a",
+      "name": "Favorites",
+      "description": "My favorite items",
+      "isPublic": false,
+      "products": [],
+      "createdAt": "2025-05-19T15:57:53.653Z"
+    },
+    {
+      "id": "fa8dc856-a9a4-4ea2-9c1e-8f3822d19bf7",
+      "name": "fff",
       "description": "",
       "isPublic": false,
       "products": [
-        "product-1"
+        "product-2",
+        "product-3"
       ],
-      "createdAt": "2025-05-18T17:28:43.255Z"
+      "createdAt": "2025-05-19T16:01:40.190Z"
     }
   ]
 }

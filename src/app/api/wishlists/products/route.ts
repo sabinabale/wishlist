@@ -3,7 +3,7 @@ import { readJsonFile } from "@/utils/JSONfileOperations";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
-// /api/wishlists/products/route.ts
+// /api/wishlists/[id]products/route.ts
 export async function GET(request: NextRequest) {
   const url = new URL(request.url);
   const productId = url.searchParams.get("productId");

@@ -25,6 +25,8 @@ export default function AddItemToWishlist({
   const [isInWishlist, setIsInWishlist] = useState(false);
   const [modalMode, setModalMode] = useState<"add" | "remove">("add");
 
+  const closeModal = useCallback(() => setIsOpen(false), []);
+
   const checkProductInWishlists = useCallback(async () => {
     if (!productId) return;
 
@@ -43,10 +45,15 @@ export default function AddItemToWishlist({
     }
   }, [productId]);
 
+  // Initialize component - moved after checkProductInWishlists is defined
   useEffect(() => {
+    // Initialize by checking if product is in any wishlist
     if (productId) {
       checkProductInWishlists();
     }
+
+    // Debug log
+    console.log("AddItemToWishlist initialized with productId:", productId);
   }, [productId, checkProductInWishlists]);
 
   const fetchWishlists = useCallback(async () => {
@@ -61,50 +68,32 @@ export default function AddItemToWishlist({
 
       const data = await response.json();
       setWishlists(data);
+      return data;
     } catch (err) {
       console.error("Error fetching wishlists:", err);
       setError("Failed to load wishlists");
+      return [];
     } finally {
       setLoading(false);
     }
   }, []);
 
-  const openModal = useCallback(() => {
-    if (!user) {
-      router.push("/login");
-      return;
-    }
-
-    if (isInWishlist) {
-      if (productWishlists.length > 0) {
-        removeFromWishlist(productId!, productWishlists[0].id, () => {
-          checkProductInWishlists();
-        });
-      }
-    } else {
-      setModalMode("add");
-      fetchWishlists();
-      setIsOpen(true);
-    }
-  }, [
-    isInWishlist,
-    fetchWishlists,
-    productWishlists,
-    productId,
-    checkProductInWishlists,
-    user,
-    router,
-  ]);
-
-  const closeModal = useCallback(() => setIsOpen(false), []);
-
+  // Function to add a product to a wishlist
   const addProductToWishlist = useCallback(
     async (wishlistId: string) => {
       if (!productId) {
         console.error("No product ID provided");
         setError("No product ID provided");
-        return;
+        return false;
       }
+
+      if (!wishlistId) {
+        console.error("No wishlist ID provided");
+        setError("No wishlist ID provided");
+        return false;
+      }
+
+      console.log(`Adding product ${productId} to wishlist ${wishlistId}`); // Debug log
 
       try {
         setLoading(true);
@@ -121,11 +110,12 @@ export default function AddItemToWishlist({
 
         if (!response.ok) {
           const data = await response.json();
+          console.error("API error:", data); // Debug log
 
           if (response.status === 409) {
             showToast("Product already in wishlist");
             closeModal();
-            return;
+            return false;
           }
 
           throw new Error(data.error || "Failed to add product to wishlist");
@@ -134,9 +124,11 @@ export default function AddItemToWishlist({
         await checkProductInWishlists();
         showToast("Added to wishlist");
         closeModal();
+        return true;
       } catch (err) {
         console.error("Error adding product to wishlist:", err);
         setError("Failed to add product to wishlist");
+        return false;
       } finally {
         setLoading(false);
       }
@@ -144,24 +136,12 @@ export default function AddItemToWishlist({
     [productId, checkProductInWishlists, closeModal]
   );
 
-  const handleAddToWishlist = useCallback(
-    (wishlistId: string) => {
-      addProductToWishlist(wishlistId);
-    },
-    [addProductToWishlist]
-  );
-
-  const handleRemoveFromWishlist = useCallback(
-    (wishlistId: string) => {
-      if (!productId) return;
-      removeFromWishlist(productId, wishlistId, () => {
-        checkProductInWishlists();
-      });
-    },
-    [productId, checkProductInWishlists]
-  );
-
   const createDefaultWishlist = useCallback(async () => {
+    if (!productId) {
+      console.error("No product ID provided for default wishlist");
+      return;
+    }
+
     try {
       setLoading(true);
 
@@ -181,18 +161,100 @@ export default function AddItemToWishlist({
       }
 
       const newWishlist = await response.json();
-      setWishlists([newWishlist]);
+      console.log("Created new wishlist:", newWishlist); // Debug log
 
-      if (productId) {
-        await addProductToWishlist(newWishlist.id);
+      // Make sure we have a valid wishlist ID before proceeding
+      if (!newWishlist.id) {
+        throw new Error("Created wishlist has no ID");
       }
+
+      setWishlists((prev) => [newWishlist, ...prev]);
+
+      // Wait for the addProductToWishlist to complete
+      const success = await addProductToWishlist(newWishlist.id);
+
+      if (!success) {
+        console.error("Failed to add product to newly created wishlist");
+      }
+
+      return newWishlist;
     } catch (err) {
       console.error("Error creating wishlist:", err);
       setError("Failed to create wishlist");
+      return null;
     } finally {
       setLoading(false);
     }
   }, [productId, addProductToWishlist]);
+
+  const openModal = useCallback(async () => {
+    if (!user) {
+      router.push("/login");
+      return;
+    }
+
+    if (isInWishlist) {
+      if (productWishlists.length > 0) {
+        removeFromWishlist(productId!, productWishlists[0].id, () => {
+          checkProductInWishlists();
+        });
+      }
+    } else {
+      setLoading(true);
+      try {
+        // First check if user has any wishlists
+        const userWishlists = await fetchWishlists();
+
+        if (!userWishlists || userWishlists.length === 0) {
+          // If no wishlists exist, automatically create a Favorites wishlist and add product
+          console.log("No wishlists found, creating default wishlist");
+          await createDefaultWishlist();
+          // After creating and adding, refresh the product wishlist status
+          await checkProductInWishlists();
+        } else if (userWishlists.length === 1) {
+          // If there's only one wishlist, automatically add the product to it
+          console.log("Only one wishlist found, automatically adding product");
+          await addProductToWishlist(userWishlists[0].id);
+        } else {
+          // If multiple wishlists exist, show the modal
+          setModalMode("add");
+          setIsOpen(true);
+        }
+      } catch (err) {
+        console.error("Error in openModal:", err);
+        setError("Failed to process wishlist operation");
+      } finally {
+        setLoading(false);
+      }
+    }
+  }, [
+    isInWishlist,
+    fetchWishlists,
+    productWishlists,
+    productId,
+    checkProductInWishlists,
+    user,
+    router,
+    createDefaultWishlist,
+    addProductToWishlist,
+  ]);
+
+  const handleAddToWishlist = useCallback(
+    (wishlistId: string) => {
+      addProductToWishlist(wishlistId);
+    },
+    [addProductToWishlist]
+  );
+
+  const handleRemoveFromWishlist = useCallback(
+    (wishlistId: string) => {
+      if (!productId) return;
+      removeFromWishlist(productId, wishlistId, () => {
+        checkProductInWishlists();
+      });
+    },
+    [productId, checkProductInWishlists]
+  );
 
   return (
     <>

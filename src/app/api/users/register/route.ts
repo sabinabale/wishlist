@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { readJsonFile, writeJsonFile } from "@/utils/JSONfileOperations";
 import crypto from "crypto";
-import { User, UsersData } from "@/types/types";
+import { User, UsersData, WishlistsData } from "@/types/types";
 
 export async function POST(request: NextRequest) {
   try {
@@ -41,6 +41,33 @@ export async function POST(request: NextRequest) {
 
     usersData.users.push(newUser);
     await writeJsonFile("users.json", usersData);
+
+    // Create default "Favorites" wishlist
+    let wishlistsData: WishlistsData;
+    try {
+      wishlistsData = await readJsonFile<WishlistsData>("wishlists.json");
+    } catch {
+      wishlistsData = {};
+    }
+
+    // Initialize user's wishlists array
+    wishlistsData[newUser.id] = [];
+
+    // Create "Favorites" wishlist
+    const favoritesWishlist = {
+      id: crypto.randomUUID(),
+      name: "Favorites",
+      description: "Your favorite products",
+      isPublic: false,
+      products: [],
+      createdAt: new Date().toISOString(),
+    };
+
+    // Add to user's wishlists
+    wishlistsData[newUser.id].push(favoritesWishlist);
+
+    // Save the wishlists
+    await writeJsonFile("wishlists.json", wishlistsData);
 
     return NextResponse.json(
       {

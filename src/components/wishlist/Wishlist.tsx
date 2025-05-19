@@ -14,6 +14,7 @@ interface WishlistProps {
   wishlistId: string;
   onNameUpdated?: () => void;
   onWishlistDeleted?: (wishlistId: string) => void;
+  isFirstWishlist?: boolean;
 }
 
 export default function Wishlist({
@@ -21,6 +22,7 @@ export default function Wishlist({
   wishlistId,
   onNameUpdated,
   onWishlistDeleted,
+  isFirstWishlist = false,
 }: WishlistProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -123,13 +125,15 @@ export default function Wishlist({
             onNameUpdated={onNameUpdated}
           />
         </div>
-        <DeleteWishlist
-          wishlistId={wishlistId}
-          onWishlistDeleted={() => {
-            onWishlistDeleted?.(wishlistId);
-            onNameUpdated?.();
-          }}
-        />
+        {!isFirstWishlist && (
+          <DeleteWishlist
+            wishlistId={wishlistId}
+            onWishlistDeleted={() => {
+              onWishlistDeleted?.(wishlistId);
+              onNameUpdated?.();
+            }}
+          />
+        )}
       </div>
 
       {productIds.length > 0 ? (

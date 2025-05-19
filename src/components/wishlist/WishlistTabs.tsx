@@ -5,6 +5,7 @@ import { useAuth } from "@/context/AuthContext";
 import { WishlistData } from "@/types/types";
 import AddWishlist from "./AddWishlist";
 import { Button } from "../ui/Button";
+import { useRouter } from "next/navigation";
 
 export default function WishlistTabs() {
   const [activeTab, setActiveTab] = useState(0);
@@ -13,8 +14,15 @@ export default function WishlistTabs() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
-  const { user } = useAuth();
+  const { user, isLoading } = useAuth();
+  const router = useRouter();
   const [refreshCounter, setRefreshCounter] = useState(0);
+
+  useEffect(() => {
+    if (!isLoading && !user) {
+      router.push("/login");
+    }
+  }, [user, isLoading, router]);
 
   const fetchWishlists = useCallback(async () => {
     if (!user) return;
@@ -22,6 +30,11 @@ export default function WishlistTabs() {
     try {
       setLoading(true);
       const response = await fetch(`/api/wishlists?_=${Date.now()}`);
+
+      if (response.status === 401) {
+        router.push("/login");
+        return;
+      }
 
       if (!response.ok) {
         throw new Error("Failed to fetch wishlists");
@@ -35,7 +48,7 @@ export default function WishlistTabs() {
     } finally {
       setLoading(false);
     }
-  }, [user]);
+  }, [user, router]);
 
   useEffect(() => {
     fetchWishlists();
@@ -129,6 +142,7 @@ export default function WishlistTabs() {
             wishlistId={wishlists[activeTab].id}
             onNameUpdated={forceRefresh}
             onWishlistDeleted={handleWishlistDeleted}
+            isFirstWishlist={activeTab === 0}
           />
         )}
       </div>
